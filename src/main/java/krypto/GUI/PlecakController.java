@@ -6,21 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class ApplicationGUIController {
-
+public class PlecakController {
     @FXML
-    MenuItem DESXMenuItem;
-
-    @FXML
-    public void changeSceneToPlecak(ActionEvent event) throws IOException {
-        Parent DESXViewParent = FXMLLoader.load(getClass().getResource("Plecakowy.fxml"));
+    public void changeSceneToMain(ActionEvent event) throws IOException {
+        Parent DESXViewParent  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
         Scene DESXViewScene = new Scene(DESXViewParent);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(DESXViewScene);
@@ -28,7 +22,7 @@ public class ApplicationGUIController {
     }
     @FXML
     public void changeSceneToDESX(ActionEvent event) throws IOException {
-        Parent DESXViewParent = FXMLLoader.load(getClass().getResource("DESX.fxml"));
+        Parent DESXViewParent  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("DESX.fxml")));
         Scene DESXViewScene = new Scene(DESXViewParent);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(DESXViewScene);

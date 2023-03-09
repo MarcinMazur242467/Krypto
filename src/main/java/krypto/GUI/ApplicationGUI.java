@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ApplicationGUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("hello-view.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
