@@ -27,7 +27,7 @@
       </Label>
       <ImageView fitHeight="278.0" fitWidth="378.0" layoutX="211.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../../../../Users/trelo/OneDrive/Desktop/300px-Asymmetric_cryptography_-_step_2.png" />
+            <Image url="@300px-Asymmetric_cryptography_-_step_2.svg.png" />
          </image>
       </ImageView>
       <Label layoutX="477.0" layoutY="447.0" text="Marcin Mazur 242467">
