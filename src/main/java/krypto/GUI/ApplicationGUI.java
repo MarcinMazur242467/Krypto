@@ -13,6 +13,7 @@ public class ApplicationGUI extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
         Scene scene = new Scene(root);
+        stage.setTitle("Projekt Kryptografia");
         stage.setScene(scene);
         stage.show();
     }
