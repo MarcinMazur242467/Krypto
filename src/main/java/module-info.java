@@ -3,6 +3,6 @@ module krypto.krypto {
     requires javafx.fxml;
 
 
-    opens krypto.krypto to javafx.fxml;
-    exports krypto.krypto;
+    opens krypto.GUI to javafx.fxml;
+    exports krypto.GUI;
 }

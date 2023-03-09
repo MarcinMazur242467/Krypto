@@ -1,9 +1,9 @@
-package krypto.krypto;
+package krypto.GUI;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class ApplicationGUIController {
     @FXML
     private Label welcomeText;
 
