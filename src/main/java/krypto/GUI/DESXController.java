@@ -68,6 +68,7 @@ public class DESXController {
         KeyVal3.setText(generator.generateKey());
     }
 
+
     @FXML
     public void changeSceneToMain(ActionEvent event) throws IOException {
         Parent DESXViewParent  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
