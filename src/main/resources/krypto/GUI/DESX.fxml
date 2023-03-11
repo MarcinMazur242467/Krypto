@@ -19,10 +19,10 @@
             <TextField fx:id="KeyVal3" layoutX="342.0" layoutY="82.0" prefHeight="25.0" prefWidth="149.0" />
             <Button fx:id="GenerateKeyButton" layoutX="533.0" layoutY="82.0" mnemonicParsing="false" onAction="#generateKeys" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;" text="Generuj klucze" />
             <Label layoutX="52.0" layoutY="135.0" prefHeight="39.0" prefWidth="128.0" text="Wczytaj klucze z pliku" />
-            <Button fx:id="ReadKeyButton" layoutX="177.0" layoutY="142.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" style="-fx-font-weight: bold;" text="Wczytaj" />
+            <Button fx:id="ReadKeyButton" layoutX="177.0" layoutY="142.0" mnemonicParsing="false" onAction="#loadFromFile" prefHeight="25.0" prefWidth="76.0" style="-fx-font-weight: bold;" text="Wczytaj" />
             <Button fx:id="WriteKeyButton" layoutX="481.0" layoutY="142.0" mnemonicParsing="false" style="-fx-font-weight: bold;" text="Zapisz" />
             <Label layoutX="359.0" layoutY="146.0" text="Zapisz klucze do pliku" />
-            <Button fx:id="LoadKeyButton1" layoutX="662.0" layoutY="82.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;" text="Wczytaj klucze" />
+            <Button fx:id="LoadKeyButton1" layoutX="662.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadKey" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;" text="Wczytaj klucze" />
          </children>
       </AnchorPane>
       <AnchorPane layoutY="200.0" prefHeight="401.0" prefWidth="806.0" style="-fx-border-color: #00bfff; -fx-border-width: 2px; -fx-padding: 10px; -fx-border-insets: 10px;">
