@@ -107,7 +107,7 @@ public class DESXController {
     }
 
     private void hexToByte(TextField field) {
-        BigInteger bigInt = new BigInteger(field.getText(), 16);
+        BigInteger bigInt = new BigInteger(field.getText().getBytes(),0,8);
         System.out.println(bigInt.toString(16));
         byte[] bytes = bigInt.toByteArray();
         System.out.println(bytes.length);
