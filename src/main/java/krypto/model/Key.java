@@ -1,10 +1,11 @@
 package krypto.model;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Key {
+public class Key implements Serializable {
     private final List<byte[]> keyList = new ArrayList<>();
 
     public void addKey(byte[] key){
@@ -27,7 +28,6 @@ public class Key {
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
         }
-        System.out.println(sb);
         return sb.toString();
     }
 
@@ -37,6 +37,7 @@ public class Key {
         // Generowanie 8 bajtów (64 bitów)
         byte[] key = new byte[8];
         random.nextBytes(key);
+        key[0]=0;
         addKey(key);
     }
 }
