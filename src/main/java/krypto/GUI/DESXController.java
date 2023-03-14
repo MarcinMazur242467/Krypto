@@ -113,6 +113,7 @@ public class DESXController implements Initializable {
             allert(Alert.AlertType.ERROR, "Błędny klucz", "Klucz jest za długi albo nie jest w systemie 16");
         }
         if(flag == true){
+            flag=false;
             key.resetKey();
         }
     }
