@@ -1,5 +1,6 @@
 package krypto.model;
 
+
 import java.io.*;
 
 public class FileManager {
@@ -9,20 +10,20 @@ public class FileManager {
         this.fileName = fileName;
     }
 
-    public Key read() {
+    public <T> T read() {
         try (FileInputStream fileIn = new FileInputStream(fileName);
              ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
             Object obj = objectIn.readObject();
-            return (Key) obj;
+            return (T) obj;
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void write(Key key){
+    public <T> void write(T t){
         try (FileOutputStream fileOut = new FileOutputStream(fileName);
              ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-            objectOut.writeObject(key);
+            objectOut.writeObject(t);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
