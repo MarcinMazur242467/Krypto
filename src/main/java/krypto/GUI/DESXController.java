@@ -21,10 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static krypto.model.Key.bytesToHex;
 
@@ -90,6 +87,7 @@ public class DESXController implements Initializable {
         KeyVal1.setText(bytesToHex(key.getKey(0)));
         KeyVal2.setText(bytesToHex(key.getKey(1)));
         KeyVal3.setText(bytesToHex(key.getKey(2)));
+        allert(Alert.AlertType.INFORMATION,"Co dalej?","Naciśnij teraz przycisk po prawej stronie: 'Wczytaj klucze' :)");
     }
 
     public void allert(Alert.AlertType type, String title, String content) {
@@ -106,33 +104,28 @@ public class DESXController implements Initializable {
             allert(Alert.AlertType.WARNING, "Błędny klucz", "Nie podałeś klucza! Musisz wpisać klucz jeszcze raz!");
             return;
         }
-        if (KeyVal1.getText().matches("[ABCDEF0123456789].{0,15}") && KeyVal2.getText().matches("[ABCDEF0123456789].{0,15}") && KeyVal3.getText().matches("[ABCDEF0123456789].{0,15}")) {
+        if (KeyVal1.getText().matches("[ABCDEF0123456789]*") && KeyVal2.getText().matches("[ABCDEF0123456789]*") && KeyVal3.getText().matches("[ABCDEF0123456789]*")) {
             hexToByte(KeyVal1);
             hexToByte(KeyVal2);
             hexToByte(KeyVal3);
-
         } else {
             allert(Alert.AlertType.ERROR, "Błędny klucz", "Klucz jest za długi albo nie jest w systemie 16");
-        }
-        if(flag == true){
-            flag=false;
-            key.resetKey();
         }
     }
 
     private void hexToByte(TextField field) {
         BigInteger bigInt = new BigInteger(field.getText(), 16);
         byte[] bytes = bigInt.toByteArray();
-        if (bytes.length <= 8) {
+        if (bytes.length > 8) {
+            // jeśli liczba jest dłuższa niż 8 bajtów, to obetnij tablicę do pierwszych 8 bajtów
+            bytes = Arrays.copyOf(bytes, 8);
+        }
+        System.out.println(bytes.length);
             byte[] paddedBytes = new byte[8];
             System.arraycopy(bytes, 0, paddedBytes, 8 - bytes.length, bytes.length);
             bytes = paddedBytes;
             key.addKey(bytes);
-        }else {
-            flag = true;
-            allert(Alert.AlertType.ERROR,"Błędny klucz!","Podany klucz ma za dużą wartość: "+field.getText());
         }
-    }
 
 
 

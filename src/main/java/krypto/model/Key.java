@@ -3,6 +3,7 @@ package krypto.model;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Key implements Serializable {
@@ -37,7 +38,10 @@ public class Key implements Serializable {
         // Generowanie 8 bajtów (64 bitów)
         byte[] key = new byte[8];
         random.nextBytes(key);
-        key[0]=0;
+        if (key.length > 8) {
+            // jeśli liczba jest dłuższa niż 8 bajtów, to obetnij tablicę do pierwszych 8 bajtów
+            key = Arrays.copyOf(key, 8);
+        }
         addKey(key);
     }
 }
