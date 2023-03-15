@@ -1,7 +1,9 @@
 package krypto.model;
 
-
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class FileManager {
     private final File fileName;
@@ -10,26 +12,27 @@ public class FileManager {
         this.fileName = fileName;
     }
 
-    public <T> T read() {
-        try (FileInputStream fileIn = new FileInputStream(fileName);
-             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
-            Object obj = objectIn.readObject();
-            return (T) obj;
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+    public List<String> read() {
+        List<String> list = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(fileName);
+
+            while (scanner.hasNextLine()) {
+                list.add(scanner.nextLine());
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+        return list;
     }
 
-    public <T> void write(T t){
-        try (FileOutputStream fileOut = new FileOutputStream(fileName);
-             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-            objectOut.writeObject(t);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void write(String s) throws IOException {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            writer.write(s);
+            writer.close();
     }
-
-
-
-
 }
+
+

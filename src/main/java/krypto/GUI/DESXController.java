@@ -14,13 +14,15 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import krypto.model.FileManager;
+import krypto.model.FileObjManager;
 import krypto.model.Key;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -66,10 +68,10 @@ public class DESXController implements Initializable {
     private Button ReadKeyButton;
 
     @FXML
-    private Button SafeCpiherToFIleButton;
+    private Button SaveCpiherToFileButton;
 
     @FXML
-    private Button SafeTextToFIleButton;
+    private Button SaveTextToFileButton;
 
     @FXML
     private Button WriteKeyButton;
@@ -160,7 +162,7 @@ public class DESXController implements Initializable {
             File file = chooser.showOpenDialog(window);
 
             if (file != null) {
-                FileManager manager = new FileManager(file);
+                FileObjManager manager = new FileObjManager(file);
                 key = manager.read();
                 KeyVal1.setText(bytesToHex(key.getKey(0)));
                 KeyVal2.setText(bytesToHex(key.getKey(1)));
@@ -178,13 +180,84 @@ public class DESXController implements Initializable {
                 File file = chooser.showSaveDialog(window);
 
               if (file != null) {
-                   FileManager manager = new FileManager(file);
+                   FileObjManager manager = new FileObjManager(file);
                    manager.write(key);
                }
             } catch (Exception ex) {
                throw new RuntimeException(ex);
            }
     }
+
+    @FXML
+    public void loadText(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        try {
+            File file = chooser.showOpenDialog(window);
+
+            if (file != null) {
+                FileManager manager = new FileManager(file);
+                List<String> list = manager.read();
+                for (String s : list) {
+                    PlainTextField.appendText(s+"\n");
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @FXML
+    public void loadCipher(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        try {
+            File file = chooser.showOpenDialog(window);
+
+            if (file != null) {
+                FileManager manager = new FileManager(file);
+                List<String> list = manager.read();
+                for (String s : list) {
+                    CipherTextField.appendText(s+"\n");
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @FXML
+    public void saveText(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        try {
+            File file = chooser.showSaveDialog(window);
+            if (file != null) {
+                FileManager manager = new FileManager(file);
+                manager.write(PlainTextField.getText());
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @FXML
+    public void saveCipher(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        try {
+            File file = chooser.showSaveDialog(window);
+            if (file != null) {
+                FileManager manager = new FileManager(file);
+                manager.write(CipherTextField.getText());
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+
+
     @FXML
     public void test(){
         System.out.println(key.getKeyList());
