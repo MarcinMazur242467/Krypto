@@ -23,9 +23,15 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
 
+import org.controlsfx.control.ToggleSwitch;
+
 import static krypto.model.Key.bytesToHex;
 
 public class DESXController implements Initializable {
+
+
+    @FXML
+    private ToggleSwitch switchF;
     @FXML
     private Button CIpherButton;
 
@@ -75,9 +81,6 @@ public class DESXController implements Initializable {
 
     private Key key = new Key();
 
-    private boolean flag= false;
-
-
     @FXML
     public void generateKeys(ActionEvent event) {
         key.resetKey();
@@ -87,7 +90,7 @@ public class DESXController implements Initializable {
         KeyVal1.setText(bytesToHex(key.getKey(0)));
         KeyVal2.setText(bytesToHex(key.getKey(1)));
         KeyVal3.setText(bytesToHex(key.getKey(2)));
-        allert(Alert.AlertType.INFORMATION,"Co dalej?","Naciśnij teraz przycisk po prawej stronie: 'Wczytaj klucze' :)");
+        loadKey(event);
     }
 
     public void allert(Alert.AlertType type, String title, String content) {
@@ -121,12 +124,11 @@ public class DESXController implements Initializable {
             bytes = Arrays.copyOf(bytes, 8);
         }
         System.out.println(bytes.length);
-            byte[] paddedBytes = new byte[8];
-            System.arraycopy(bytes, 0, paddedBytes, 8 - bytes.length, bytes.length);
-            bytes = paddedBytes;
-            key.addKey(bytes);
-        }
-
+        byte[] paddedBytes = new byte[8];
+        System.arraycopy(bytes, 0, paddedBytes, 8 - bytes.length, bytes.length);
+        bytes = paddedBytes;
+        key.addKey(bytes);
+    }
 
 
     @FXML
@@ -148,7 +150,7 @@ public class DESXController implements Initializable {
     }
 
     @FXML
-    public void loadKeyFromFile(ActionEvent event){
+    public void loadKeyFromFile(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -165,20 +167,21 @@ public class DESXController implements Initializable {
             throw new RuntimeException(ex);
         }
     }
+
     @FXML
-    public void saveKeysToFile(ActionEvent event){
+    public void saveKeysToFile(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-           try {
-                File file = chooser.showSaveDialog(window);
+        try {
+            File file = chooser.showSaveDialog(window);
 
-              if (file != null) {
-                   FileObjManager manager = new FileObjManager(file);
-                   manager.write(key);
-               }
-            } catch (Exception ex) {
-               throw new RuntimeException(ex);
-           }
+            if (file != null) {
+                FileObjManager manager = new FileObjManager(file);
+                manager.write(key);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @FXML
@@ -192,7 +195,7 @@ public class DESXController implements Initializable {
                 FileManager manager = new FileManager(file);
                 List<String> list = manager.read();
                 for (String s : list) {
-                    PlainTextField.appendText(s+"\n");
+                    PlainTextField.appendText(s + "\n");
                 }
             }
         } catch (Exception ex) {
@@ -211,7 +214,7 @@ public class DESXController implements Initializable {
                 FileManager manager = new FileManager(file);
                 List<String> list = manager.read();
                 for (String s : list) {
-                    CipherTextField.appendText(s+"\n");
+                    CipherTextField.appendText(s + "\n");
                 }
             }
         } catch (Exception ex) {
@@ -249,10 +252,8 @@ public class DESXController implements Initializable {
         }
     }
 
-
-
     @FXML
-    public void test(){
+    public void test() {
         System.out.println(key.getKeyList());
         System.out.println(key.getKey(0));
         System.out.println(key.getKey(1));
@@ -263,6 +264,18 @@ public class DESXController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        switchF.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            PlainTextField.setDisable(true);
+            CipherTextField.setDisable(true);
+            if (!switchF.isSelected()) {
+                CipherTextField.setText("");
+                PlainTextField.setText("");
+                PlainTextField.setDisable(true);
+                CipherTextField.setDisable(true);
+            } else {
+                PlainTextField.setDisable(false);
+                CipherTextField.setDisable(false);
+            }
+        });
     }
 }
