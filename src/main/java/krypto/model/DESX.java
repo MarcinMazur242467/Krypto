@@ -211,7 +211,7 @@ public class DESX {
         return result;
     }
 
-    public void feistelFunction(byte[] block, byte[] key) {
+    public byte[] feistelFunction(byte[] block, byte[] key) {
         block = extendedPermutation(block);
         BigInteger extebdedPermutationBlock = new BigInteger(block);
         BigInteger secretKey = new BigInteger(key);
@@ -254,10 +254,8 @@ public class DESX {
             System.arraycopy(bytes, 0, temp, 4 - bytes.length, bytes.length);
             bytes = temp;
         }
-        test(bytes);
-        bytes = PblockPermutation(bytes);
-
-        System.out.println(Key.bytesToHex(bytes));
+        //TO NIE DZIALA POZDRO
+        return PblockPermutation(bytes);
     }
 
     public void test(byte[] bytes) {

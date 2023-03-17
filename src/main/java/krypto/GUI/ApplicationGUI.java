@@ -31,8 +31,8 @@ public class ApplicationGUI extends Application {
         DESX desx = new DESX();
         byte[][] blocks = DESX.divideIntoBlocks("123asd123asd123asd");
         desx.feistelFunction(blocks[0], key.getKey(0));
-
-
+        desx.PblockPermutation(blocks[0]);
+        System.out.println(desx.PblockPermutation(blocks[0]).length);
 //        launch();
     }
 }
