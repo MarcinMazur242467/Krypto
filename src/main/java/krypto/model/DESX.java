@@ -219,16 +219,45 @@ public class DESX {
         block = extebdedPermutationBlock.toByteArray();
         List<byte[]> sboxInput = new ArrayList<>();
         byte[] result = new byte[8];
-        byte[] output = new byte[8];
+        byte[][] output = new byte[8][1];
         for (int i = 0; i < 8; i++) {
             int startIndex = i * 6 / 8;
             int shift = 2 * (i * 6 % 8);
             result[i] = (byte) ((block[startIndex] >> shift) & 0x3F);
             int row = ((result[i] & 0b100000) >> 4) | (result[i] & 0b000001);
             int col = (result[i] & 0b011110) >> 1;
-            output[i] = (byte) S_BOXES[i][row][col];
+            output[i][0] = (byte) S_BOXES[i][row][col];
+        }
+        System.out.println(output.length);
+        for (int i=0;i<8;i++){
+            test(output[i]);
+        }
+        BigInteger resultt = BigInteger.ZERO;
+            for (int i = 0; i < 8; i++) {
+                BigInteger value = BigInteger.valueOf(output[i][0] & 0xFF);
+                resultt = resultt.shiftLeft(8).or(value);
+            }
+
+// Convert the BigInteger into a byte array
+        byte[] bytes = resultt.toByteArray();
+
+// If the byte array has more than 4 bytes, remove the leading zero byte
+        if (bytes.length > 4 && bytes[0] == 0) {
+            byte[] temp = new byte[4];
+            System.arraycopy(bytes, 1, temp, 0, 4);
+            bytes = temp;
         }
 
+// If the byte array has less than 4 bytes, pad it with zero bytes
+        if (bytes.length < 4) {
+            byte[] temp = new byte[4];
+            System.arraycopy(bytes, 0, temp, 4 - bytes.length, bytes.length);
+            bytes = temp;
+        }
+        test(bytes);
+        bytes = PblockPermutation(bytes);
+
+        System.out.println(Key.bytesToHex(bytes));
     }
 
     public void test(byte[] bytes) {
@@ -238,7 +267,7 @@ public class DESX {
             int unsignedByte = b & 0xFF;
             String binaryString = Integer.toBinaryString(unsignedByte);
             // Pad the binary string with leading zeros if necessary
-            while (binaryString.length() < 6) {
+            while (binaryString.length() < 4) {
                 binaryString = "0" + binaryString;
             }
             sb.append(binaryString);
