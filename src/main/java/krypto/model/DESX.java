@@ -165,6 +165,31 @@ public class DESX {
         return permutedBock;
     }
 
+    public byte[] PblockPermutation(byte[] block) {
+        byte[] permutedBock = new byte[4];
+        byte[] PblockPermutationTable = new byte[]{
+                16, 7, 20, 21, 29, 12, 28, 17,
+                1, 15, 23, 26, 5, 18, 31, 10,
+                2, 8, 24, 14, 32, 27, 3, 9,
+                19, 13, 30, 6, 22, 11, 4, 25
+        };
+
+        // TO NIE BEDZIE DZIALAC
+        // TO NIE BEDZIE DZIALAC
+        // TO NIE BEDZIE DZIALAC
+        // TO NIE BEDZIE DZIALAC
+        // TO NIE BEDZIE DZIALAC
+        for (int i = 0; i < PblockPermutationTable.length; i++) {
+            byte index = (byte) (PblockPermutationTable[i] - 1); // subtract 1 to adjust for 0-based indexing
+            byte byteIndex = (byte) (index / 8); // calculate the index of the byte that contains the bit
+            byte bitIndex = (byte) (7 - (index % 8)); // calculate the index of the bit within the byte
+            byte bit = (byte) ((block[byteIndex] >> bitIndex) & 0x01); // extract the bit at the specified position
+            permutedBock[i / 8] |= (bit << (7 - (i % 8))); // set the bit in the corresponding position in the permuted key
+        }
+        return permutedBock;
+    }
+
+
     public byte[] extendedPermutation(byte[] block) {
         byte[] result = new byte[6];
         byte[] extendingPermutation = new byte[]{
@@ -189,8 +214,8 @@ public class DESX {
     public void feistelFunction(byte[] block, byte[] key) {
         block = extendedPermutation(block);
         BigInteger extebdedPermutationBlock = new BigInteger(block);
-//        BigInteger secretKey = new BigInteger(key);
-//        extebdedPermutationBlock = extebdedPermutationBlock.xor(secretKey);
+        BigInteger secretKey = new BigInteger(key);
+        extebdedPermutationBlock = extebdedPermutationBlock.xor(secretKey);
         block = extebdedPermutationBlock.toByteArray();
         List<byte[]> sboxInput = new ArrayList<>();
         byte[] result = new byte[8];
@@ -201,12 +226,8 @@ public class DESX {
             result[i] = (byte) ((block[startIndex] >> shift) & 0x3F);
             int row = ((result[i] & 0b100000) >> 4) | (result[i] & 0b000001);
             int col = (result[i] & 0b011110) >> 1;
-            output[i] = (byte) S_BOXES[row][col];
+            output[i] = (byte) S_BOXES[i][row][col];
         }
-        System.out.println(S_BOXES[1].length);
-        test(result);
-        test(output);
-
 
     }
 
