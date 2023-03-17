@@ -16,14 +16,16 @@ import javafx.stage.Stage;
 import krypto.model.FileManager;
 import krypto.model.FileObjManager;
 import krypto.model.Key;
+import org.controlsfx.control.ToggleSwitch;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.*;
-
-import org.controlsfx.control.ToggleSwitch;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 import static krypto.model.Key.bytesToHex;
 
@@ -254,12 +256,15 @@ public class DESXController implements Initializable {
 
     @FXML
     public void test() {
-        System.out.println(key.getKeyList());
-        System.out.println(key.getKey(0));
-        System.out.println(key.getKey(1));
-        System.out.println(key.getKey(2));
-        System.out.println();
-        System.out.println(bytesToHex(key.getKey(0)));
+//        System.out.println(key.getKeyList());
+//        System.out.println(key.getKey(0));
+//        System.out.println(key.getKey(1));
+//        System.out.println(key.getKey(2));
+//        System.out.println();
+//        System.out.println(bytesToHex(key.getKey(0)));
+        byte[] test1 = new byte[]{1,1,1,1,1,1,1,1};
+        BigInteger integer = new BigInteger(test1);
+        System.out.println(integer.shiftLeft(1));
     }
 
     @Override

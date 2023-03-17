@@ -44,4 +44,8 @@ public class Key implements Serializable {
         }
         addKey(key);
     }
+    public void generateSubKey(){
+        byte[] mainKey = keyList.get(1);
+
+    }
 }
