@@ -22,7 +22,7 @@ public class Key implements Serializable {
     }
 
     public byte[] getPermuttedKey(int i) {
-        return permuttedKeyList.get(i);
+        return Arrays.copyOfRange(permuttedKeyList.get(i), 0, 6);
     }
 
 
