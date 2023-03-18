@@ -66,7 +66,7 @@ public class DESX {
             }
     };
 
-    public static byte[][] divideIntoBlocks(String text) {
+    public static byte[][] divideIntoBlocks(String text){
         int counter = 0;
         byte[] bytes = text.getBytes();
         int blockCount = (int) Math.ceil((double) bytes.length / 8);
@@ -149,45 +149,34 @@ public class DESX {
                 61, 53, 45, 37, 29, 21, 13, 5,
                 63, 55, 47, 39, 31, 23, 15, 7
         };
-
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
         for (int i = 0; i < initialPermutationTable.length; i++) {
-            byte index = (byte) (initialPermutationTable[i] - 1); // subtract 1 to adjust for 0-based indexing
-            byte byteIndex = (byte) (index / 8); // calculate the index of the byte that contains the bit
-            byte bitIndex = (byte) (7 - (index % 8)); // calculate the index of the bit within the byte
+            int index = initialPermutationTable[i] - 1; // subtract 1 to adjust for 0-based indexing
+            int byteIndex = index / 8; // calculate the index of the byte that contains the bit
+            int bitIndex = 7 - (index % 8); // calculate the index of the bit within the byte
             byte bit = (byte) ((block[byteIndex] >> bitIndex) & 0x01); // extract the bit at the specified position
             permutedBock[i / 8] |= (bit << (7 - (i % 8))); // set the bit in the corresponding position in the permuted key
         }
         return permutedBock;
     }
 
-    public byte[] PblockPermutation(byte[] block) {
-        byte[] permutedBock = new byte[4];
-        byte[] PblockPermutationTable = new byte[]{
-                16, 7, 20, 21, 29, 12, 28, 17,
-                1, 15, 23, 26, 5, 18, 31, 10,
-                2, 8, 24, 14, 32, 27, 3, 9,
-                19, 13, 30, 6, 22, 11, 4, 25
-        };
-
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        // TO NIE BEDZIE DZIALAC
-        for (int i = 0; i < PblockPermutationTable.length; i++) {
-            byte index = (byte) (PblockPermutationTable[i] - 1); // subtract 1 to adjust for 0-based indexing
-            byte byteIndex = (byte) (index / 8); // calculate the index of the byte that contains the bit
-            byte bitIndex = (byte) (7 - (index % 8)); // calculate the index of the bit within the byte
-            byte bit = (byte) ((block[byteIndex] >> bitIndex) & 0x01); // extract the bit at the specified position
-            permutedBock[i / 8] |= (bit << (7 - (i % 8))); // set the bit in the corresponding position in the permuted key
-        }
-        return permutedBock;
-    }
+//    public byte[] PblockPermutation(byte[] block) {
+//        byte[] PblockPermutationTable = new byte[]{
+//                16, 7, 20, 21, 29, 12, 28, 17,
+//                1, 15, 23, 26, 5, 18, 31, 10,
+//                2, 8, 24, 14, 32, 27, 3, 9,
+//                19, 13, 30, 6, 22, 11, 4, 25
+//        };
+//        byte[] output = new byte[4];
+//        for (int i = 0; i < PblockPermutationTable.length; i++) {
+//            int index = PblockPermutationTable[i] - 1;
+//            int byteIndex = index / 8;
+//            int bitIndex = index % 8;
+//            byte mask = (byte) (1 << (8 - bitIndex));
+//            output[i] = (byte) ((block[byteIndex] & mask) != 0 ? 1 : 0);
+//        }
+//
+//        return output;
+//    }
 
 
     public byte[] extendedPermutation(byte[] block) {
@@ -200,7 +189,7 @@ public class DESX {
                 22, 23, 24, 25, 24, 25, 26, 27,
                 28, 29, 28, 29, 30, 31, 32, 1
         };
-        for (int i = 0; i < 48; i++) {
+        for (int i = 0; i < extendingPermutation.length; i++) {
             byte index = (byte) (extendingPermutation[i] - 1); // subtract 1 to adjust for 0-based indexing
             byte byteIndex = (byte) (index / 8); // calculate the index of the byte that contains the bit
             byte bitIndex = (byte) (7 - (index % 8)); // calculate the index of the bit within the byte
@@ -211,27 +200,32 @@ public class DESX {
         return result;
     }
 
-    public void feistelFunction(byte[] block, byte[] key) {
-        block = extendedPermutation(block);
-        BigInteger extebdedPermutationBlock = new BigInteger(block);
-        BigInteger secretKey = new BigInteger(key);
-        extebdedPermutationBlock = extebdedPermutationBlock.xor(secretKey);
-        block = extebdedPermutationBlock.toByteArray();
-        List<byte[]> sboxInput = new ArrayList<>();
+    public byte[] feistelFunction(byte[] block, byte[] permutedKey) throws Exception {
+        if(block.length != 4){
+            throw new Exception("Invalid block size");
+        }
+        if(permutedKey.length !=6){
+            throw new Exception("Invalid key size");
+        }
+        byte [] extendedBlock  = extendedPermutation(block);
+        BigInteger extebdedPermutationBlock = new BigInteger(extendedBlock);
+        BigInteger secretKey = new BigInteger(permutedKey);
+        test(extendedBlock);
+        test(permutedKey);
+        byte[] extendedBlockXorKey = extebdedPermutationBlock.xor(secretKey).toByteArray();
+        test(extendedBlockXorKey);
         byte[] result = new byte[8];
         byte[][] output = new byte[8][1];
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {// gdzies w forze jest blad
             int startIndex = i * 6 / 8;
             int shift = 2 * (i * 6 % 8);
-            result[i] = (byte) ((block[startIndex] >> shift) & 0x3F);
+            result[i] = (byte) ((extendedBlockXorKey[startIndex] >> shift) & 0x3F);
             int row = ((result[i] & 0b100000) >> 4) | (result[i] & 0b000001);
             int col = (result[i] & 0b011110) >> 1;
             output[i][0] = (byte) S_BOXES[i][row][col];
         }
-        System.out.println(output.length);
-        for (int i=0;i<8;i++){
-            test(output[i]);
-        }
+//        test(output[1]);
+
         BigInteger resultt = BigInteger.ZERO;
             for (int i = 0; i < 8; i++) {
                 BigInteger value = BigInteger.valueOf(output[i][0] & 0xFF);
@@ -254,76 +248,37 @@ public class DESX {
             System.arraycopy(bytes, 0, temp, 4 - bytes.length, bytes.length);
             bytes = temp;
         }
-        test(bytes);
-        bytes = PblockPermutation(bytes);
-
-        System.out.println(Key.bytesToHex(bytes));
+//        bytes = PblockPermutation(bytes);
+        return result;
     }
 
-    public void test(byte[] bytes) {
+    public static void test(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
-
+        int bits = 0;
         for (byte b : bytes) {
             int unsignedByte = b & 0xFF;
             String binaryString = Integer.toBinaryString(unsignedByte);
             // Pad the binary string with leading zeros if necessary
-            while (binaryString.length() < 4) {
+            while (binaryString.length() < 8) {
                 binaryString = "0" + binaryString;
             }
-            sb.append(binaryString);
+            bits++;
+            sb.append(binaryString+" ");
         }
 
         String binaryOutput = sb.toString();
+        System.out.println("Byte size: "+ bits);
         System.out.println(binaryOutput);
     }
 
-    private byte[] bitRotateLeftByOne(byte[] table) {
-        BigInteger shitfR = new BigInteger(table);
-        BigInteger shitfL = new BigInteger(table);
-        shitfR = shitfR.shiftRight(27);
-        shitfL = shitfL.shiftLeft(1);
-        byte[] result = shitfR.or(shitfL).toByteArray();
-        return result;
-    }
 
-    private byte[] bitRotateLeftByTwo(byte[] table) {
-        BigInteger shitfR = new BigInteger(table);
-        BigInteger shitfL = new BigInteger(table);
-        shitfR = shitfR.shiftRight(26);
-        shitfL = shitfL.shiftLeft(2);
-        byte[] result = shitfR.or(shitfL).toByteArray();
-        return result;
-    }
 
-    public List<byte[]> permuttedKey(byte[] key, int roundNumber) {
-        List<byte[]> permuttedKeyList = new ArrayList<>();
 
-        byte[] permutedKey = PC1(key);
 
-        BigInteger bigNum = new BigInteger(1, permutedKey);
-        byte[] rightKey = bigNum.shiftRight(28).and(new BigInteger("FFFFFFF", 16)).toByteArray();
-        byte[] leftKey = bigNum.and(new BigInteger("FFFFFFF", 16)).toByteArray();
-        for (int i = 0; i < 16; i++) {
-            if (roundNumber == 0 || roundNumber == 1 || roundNumber == 8 || roundNumber == 15) {
-                rightKey = bitRotateLeftByOne(rightKey);
-                leftKey = bitRotateLeftByOne(leftKey);
-            } else {
-                rightKey = bitRotateLeftByTwo(rightKey);
-                leftKey = bitRotateLeftByTwo(leftKey);
-            }
-
-            BigInteger bigIntegerLeft = new BigInteger(1, rightKey);
-            BigInteger bigIntegerRight = new BigInteger(1, leftKey);
-            BigInteger bigInteger = bigIntegerRight.shiftLeft(28).or(bigIntegerLeft);
-
-            permutedKey = bigInteger.toByteArray();
-
-            permuttedKeyList.add(PC2(permutedKey));
+    public void cipher(byte[] block, Key keys) throws Exception {
+        if(block.length != 8){
+            throw new Exception("Invalid block size");
         }
-        return permuttedKeyList;
-    }
-
-    public void cipher(byte[] block, Key keys) {
         BigInteger BIGBlock = new BigInteger(block);
         BigInteger BIGKey = new BigInteger(keys.getKey(0));
         block = initialPermutation(BIGBlock.xor(BIGKey).toByteArray());

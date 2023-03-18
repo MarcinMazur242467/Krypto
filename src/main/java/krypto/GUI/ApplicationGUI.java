@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static krypto.model.DESX.test;
+
 public class ApplicationGUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -29,8 +31,16 @@ public class ApplicationGUI extends Application {
         Key key = new Key();
         key.generateKey();
         DESX desx = new DESX();
-        byte[][] blocks = DESX.divideIntoBlocks("123asd123asd123asd");
-        desx.feistelFunction(blocks[0], key.getKey(0));
+        byte[] test = new byte[]{127,23,12,123};
+        byte[] testKey = new byte[]{1,2,3,4,5,6};
+        key.generateKey();
+//        key.generatePermutedKeys(key.getKey(1));
+//        test(desx.extendedPermutation(test));
+        try {
+            desx.feistelFunction(test, testKey);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
 //        launch();

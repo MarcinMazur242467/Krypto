@@ -125,7 +125,6 @@ public class DESXController implements Initializable {
             // jeśli liczba jest dłuższa niż 8 bajtów, to obetnij tablicę do pierwszych 8 bajtów
             bytes = Arrays.copyOf(bytes, 8);
         }
-        System.out.println(bytes.length);
         byte[] paddedBytes = new byte[8];
         System.arraycopy(bytes, 0, paddedBytes, 8 - bytes.length, bytes.length);
         bytes = paddedBytes;
@@ -256,15 +255,7 @@ public class DESXController implements Initializable {
 
     @FXML
     public void test() {
-//        System.out.println(key.getKeyList());
-//        System.out.println(key.getKey(0));
-//        System.out.println(key.getKey(1));
-//        System.out.println(key.getKey(2));
-//        System.out.println();
-//        System.out.println(bytesToHex(key.getKey(0)));
-        byte[] test1 = new byte[]{1,1,1,1,1,1,1,1};
-        BigInteger integer = new BigInteger(test1);
-        System.out.println(integer.shiftLeft(1));
+
     }
 
     @Override
