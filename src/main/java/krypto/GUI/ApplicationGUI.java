@@ -37,12 +37,12 @@ public class ApplicationGUI extends Application {
         key.generatePermutedKeys(key.getKey(1));
 //        test(desx.extendedPermutation(test));
         for(int i=0;i<16;i++){
-            test(key.getPermuttedKey(i));
+//            test(key.getPermuttedKey(i));
         }
 
 
         try {
-//            desx.feistelFunction(test, testKey);
+            desx.feistelFunction(test, testKey);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

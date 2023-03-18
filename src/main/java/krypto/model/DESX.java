@@ -210,47 +210,25 @@ public class DESX {
         byte [] extendedBlock  = extendedPermutation(block);
         BigInteger extebdedPermutationBlock = new BigInteger(extendedBlock);
         BigInteger secretKey = new BigInteger(permutedKey);
-        test(extendedBlock);
-        test(permutedKey);
+//        test(extendedBlock);
+//        test(permutedKey);
         byte[] extendedBlockXorKey = extebdedPermutationBlock.xor(secretKey).toByteArray();
-        test(extendedBlockXorKey);
-        byte[] result = new byte[8];
+//        test(extendedBlockXorKey);
+        byte[][] result = new byte[8][1];
         byte[][] output = new byte[8][1];
         for (int i = 0; i < 8; i++) {// gdzies w forze jest blad
             int startIndex = i * 6 / 8;
             int shift = 2 * (i * 6 % 8);
-            result[i] = (byte) ((extendedBlockXorKey[startIndex] >> shift) & 0x3F);
-            int row = ((result[i] & 0b100000) >> 4) | (result[i] & 0b000001);
-            int col = (result[i] & 0b011110) >> 1;
+            result[i][0] = (byte) ((extendedBlockXorKey[startIndex] >> shift) & 0x3F);
+            int row = ((result[i][0] & 0b100000) >> 4) | (result[i][0] & 0b000001);
+            int col = (result[i][0] & 0b011110) >> 1;
             output[i][0] = (byte) S_BOXES[i][row][col];
         }
-//        test(output[1]);
 
-        BigInteger resultt = BigInteger.ZERO;
-            for (int i = 0; i < 8; i++) {
-                BigInteger value = BigInteger.valueOf(output[i][0] & 0xFF);
-                resultt = resultt.shiftLeft(8).or(value);
-            }
 
-// Convert the BigInteger into a byte array
-        byte[] bytes = resultt.toByteArray();
 
-// If the byte array has more than 4 bytes, remove the leading zero byte
-        if (bytes.length > 4 && bytes[0] == 0) {
-            byte[] temp = new byte[4];
-            System.arraycopy(bytes, 1, temp, 0, 4);
-            bytes = temp;
-        }
-
-// If the byte array has less than 4 bytes, pad it with zero bytes
-        if (bytes.length < 4) {
-            byte[] temp = new byte[4];
-            System.arraycopy(bytes, 0, temp, 4 - bytes.length, bytes.length);
-            bytes = temp;
-        }
-
-        //TO NIE DZIALA POZDRO
-        return PblockPermutation(bytes);
+//        return PblockPermutation(bytes);
+        return new byte[8];
     }
 
     public static void test(byte[] bytes) {

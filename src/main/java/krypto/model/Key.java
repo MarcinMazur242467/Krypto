@@ -117,8 +117,6 @@ public class Key implements Serializable {
         BigInteger bigNum = new BigInteger(1, permutedKey);
         byte[] rightKey = bigNum.shiftRight(28).and(new BigInteger("FFFFFFF", 16)).toByteArray();
         byte[] leftKey = bigNum.and(new BigInteger("FFFFFFF", 16)).toByteArray();
-        test(rightKey);
-        test(leftKey);
         for (int i = 0; i < 16; i++) {
             if (i == 0 || i == 1 || i == 8 || i == 15) {
                 rightKey = bitRotateLeftByOne(rightKey);
