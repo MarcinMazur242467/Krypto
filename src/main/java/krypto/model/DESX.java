@@ -159,24 +159,24 @@ public class DESX {
         return permutedBock;
     }
 
-//    public byte[] PblockPermutation(byte[] block) {
-//        byte[] PblockPermutationTable = new byte[]{
-//                16, 7, 20, 21, 29, 12, 28, 17,
-//                1, 15, 23, 26, 5, 18, 31, 10,
-//                2, 8, 24, 14, 32, 27, 3, 9,
-//                19, 13, 30, 6, 22, 11, 4, 25
-//        };
-//        byte[] output = new byte[4];
-//        for (int i = 0; i < PblockPermutationTable.length; i++) {
-//            int index = PblockPermutationTable[i] - 1;
-//            int byteIndex = index / 8;
-//            int bitIndex = index % 8;
-//            byte mask = (byte) (1 << (8 - bitIndex));
-//            output[i] = (byte) ((block[byteIndex] & mask) != 0 ? 1 : 0);
-//        }
-//
-//        return output;
-//    }
+    public byte[] PblockPermutation(byte[] block) {
+        byte[] PblockPermutationTable = new byte[]{
+                16, 7, 20, 21, 29, 12, 28, 17,
+                1, 15, 23, 26, 5, 18, 31, 10,
+                2, 8, 24, 14, 32, 27, 3, 9,
+                19, 13, 30, 6, 22, 11, 4, 25
+        };
+        byte[] output = new byte[4];
+        for (int i = 0; i < PblockPermutationTable.length; i++) {
+            int index = PblockPermutationTable[i] - 1;
+            int byteIndex = index / 8;
+            int bitIndex = index % 8;
+            byte mask = (byte) (1 << (8 - bitIndex));
+            output[i] = (byte) ((block[byteIndex] & mask) != 0 ? 1 : 0);
+        }
+
+        return output;
+    }
 
 
     public byte[] extendedPermutation(byte[] block) {
@@ -248,8 +248,9 @@ public class DESX {
             System.arraycopy(bytes, 0, temp, 4 - bytes.length, bytes.length);
             bytes = temp;
         }
-//        bytes = PblockPermutation(bytes);
-        return result;
+
+        //TO NIE DZIALA POZDRO
+        return PblockPermutation(bytes);
     }
 
     public static void test(byte[] bytes) {

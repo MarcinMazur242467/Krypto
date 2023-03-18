@@ -41,8 +41,6 @@ public class ApplicationGUI extends Application {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
 //        launch();
     }
 }
