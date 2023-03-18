@@ -13,10 +13,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import krypto.model.FileManager;
-import krypto.model.FileObjManager;
-import krypto.model.Key;
+import krypto.model.*;
 import org.controlsfx.control.ToggleSwitch;
+import org.controlsfx.control.action.Action;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +27,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static krypto.model.Key.bytesToHex;
+import static krypto.model.Text.blocksToString;
 
 public class DESXController implements Initializable {
 
@@ -82,6 +82,7 @@ public class DESXController implements Initializable {
     private Button WriteKeyButton;
 
     private Key key = new Key();
+    private byte[][] buffer;
 
     @FXML
     public void generateKeys(ActionEvent event) {
@@ -252,6 +253,30 @@ public class DESXController implements Initializable {
             throw new RuntimeException(ex);
         }
     }
+
+
+    @FXML
+    public void Cipher(ActionEvent event) throws Exception {
+        byte[][] textInBlocks = Text.divideIntoBlocks(PlainTextField.getText());
+        buffer = new byte[textInBlocks.length][8];
+        DESX desx = new DESX();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < textInBlocks.length-1 ; i++) {
+            buffer[i] = desx.cipher(textInBlocks[i],key);
+            stringBuilder.append(blocksToString(buffer[i]));
+        }
+        CipherTextField.setText(stringBuilder.toString());
+    }
+    @FXML
+    public void Decipher(ActionEvent event) throws Exception {
+        StringBuilder stringBuilder = new StringBuilder();
+        DESX desx = new DESX();
+        for (int i = 0; i <buffer.length-1 ; i++) {
+            stringBuilder.append(blocksToString(desx.decipher(buffer[i],key)));
+        }
+        PlainTextField.setText(stringBuilder.toString());
+    }
+
 
     @FXML
     public void test() {

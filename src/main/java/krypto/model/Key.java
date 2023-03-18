@@ -3,9 +3,7 @@ package krypto.model;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static krypto.model.DESX.test;
 
@@ -28,6 +26,10 @@ public class Key implements Serializable {
 
     public void resetKey() {
         keyList.clear();
+    }
+    public void reveseKeyLists(){
+        Collections.reverse(keyList);
+        Collections.reverse(permuttedKeyList);
     }
 
     public static String bytesToHex(byte[] bytes) {
