@@ -172,7 +172,6 @@ public class DESX {
 
     public byte[] feistelFunction(byte[] block, byte[] permutedKey) throws Exception {
         if(block.length != 4){
-            System.out.println(block.length);
             throw new Exception("Invalid block size");
         }
         if(permutedKey.length !=6){
@@ -259,12 +258,13 @@ public class DESX {
     }
 
     public byte[] cipher(byte[] block, Key keys) throws Exception {
+        System.out.println(block.length);
         if(block.length != 8){
             throw new Exception("Invalid block size");
         }
-        for(int i=0;i<8;i++){
-            block[i] = (byte) (block[i]^keys.getKey(0)[i]);
-        }
+//        for(int i=0;i<8;i++){
+//            block[i] = (byte) (block[i]^keys.getKey(0)[i]);
+//        }
         block = initialPermutation(block);
         byte[] leftBlock = new byte[4];
         byte[] rightBlock = new byte[4];
@@ -290,9 +290,9 @@ public class DESX {
         byte[] result = new byte[8];
         System.arraycopy(byteLeftBlock, 0, result, 0, byteLeftBlock.length);
         System.arraycopy(byteRightBlock, 0, result, byteLeftBlock.length, byteRightBlock.length);
-        for(int j=0;j<8;j++){
-            result[j] = (byte)(result[j]^ keys.getKey(2)[j]);
-        }
+//        for(int j=0;j<8;j++){
+//            result[j] = (byte)(result[j]^ keys.getKey(2)[j]);
+//        }
         return finalPermutation(result);
     }
 
@@ -300,18 +300,21 @@ public class DESX {
         if(block.length != 8){
             throw new Exception("Invalid block size");
         }
-        for(int i=0;i<8;i++){
-            block[i] = (byte) (block[i]^keys.getKey(2)[i]);
-        }
+//        BigInteger ss = new BigInteger(block);
+//        BigInteger kk = new BigInteger(keys.getKey(2));
+//        block=ss.xor(kk).toByteArray();
+//        for(int i=0;i<8;i++){
+//            block[i] = (byte) (block[i]^keys.getKey(2)[i]);
+//        }
+
         block = finalPermutation(block);
         byte[] leftBlock = new byte[4];
         byte[] rightBlock = new byte[4];
 
         System.arraycopy(block, 0, leftBlock, 0, 4);
         System.arraycopy(block, 4, rightBlock, 0, 4);
-        keys.generatePermutedKeys(keys.getKey(1));
 
-        for(int i=16;i>0;i--){
+        for(int i=15;i>=0;i--){
             byte[] byteRightBlock = rightBlock;
             byte[] byteLeftBlock = leftBlock;
             byte[] temp = feistelFunction(byteRightBlock,keys.getPermuttedKey(i));
@@ -328,9 +331,12 @@ public class DESX {
         byte[] result = new byte[8];
         System.arraycopy(byteLeftBlock, 0, result, 0, byteLeftBlock.length);
         System.arraycopy(byteRightBlock, 0, result, byteLeftBlock.length, byteRightBlock.length);
-        for(int j=0;j<8;j++){
-            result[j] = (byte)(result[j]^ keys.getKey(0)[j]);
-        }
+//        BigInteger s = new BigInteger(result);
+//        BigInteger k = new BigInteger(keys.getKey(0));
+//        result = s.xor(k).toByteArray();
+//        for(int j=0;j<8;j++){
+//            result[j] = (byte)(result[j]^ keys.getKey(0)[j]);
+//        }
         return initialPermutation(result);
     }
 

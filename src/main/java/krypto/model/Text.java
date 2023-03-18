@@ -1,6 +1,7 @@
 package krypto.model;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class Text {
@@ -9,7 +10,7 @@ public class Text {
         int counter = 0;
         byte[] bytes = text.getBytes();
         int blockCount = (int) Math.ceil((double) bytes.length / 8);
-        byte[][] blocks = new byte[blockCount + 1][8];
+        byte[][] blocks = new byte[blockCount][8];
         int index = 0;
         for (int i = 0; i < blockCount; i++) {
             for (int j = 0; j < 8; j++) {
@@ -28,12 +29,12 @@ public class Text {
                 }
             }
         }
-        blocks[blockCount] = ByteBuffer.allocate(4).putInt(counter).array();
+//        blocks[blockCount] = ByteBuffer.allocate(4).putInt(counter).array();
 
 
         return blocks;
     }
     public static String blocksToString(byte[] block){
-        return Base64.getEncoder().encodeToString(block);
+        return new String(block, StandardCharsets.UTF_8);
     }
 }

@@ -261,7 +261,7 @@ public class DESXController implements Initializable {
         buffer = new byte[textInBlocks.length][8];
         DESX desx = new DESX();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < textInBlocks.length-1 ; i++) {
+        for (int i = 0; i < textInBlocks.length ; i++) {
             buffer[i] = desx.cipher(textInBlocks[i],key);
             stringBuilder.append(blocksToString(buffer[i]));
         }
@@ -271,7 +271,7 @@ public class DESXController implements Initializable {
     public void Decipher(ActionEvent event) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         DESX desx = new DESX();
-        for (int i = 0; i <buffer.length-1 ; i++) {
+        for (int i = 0; i <buffer.length; i++) {
             stringBuilder.append(blocksToString(desx.decipher(buffer[i],key)));
         }
         PlainTextField.setText(stringBuilder.toString());
