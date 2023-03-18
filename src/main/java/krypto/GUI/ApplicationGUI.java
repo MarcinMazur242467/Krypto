@@ -27,11 +27,11 @@ public class ApplicationGUI extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Key key = new Key();
         key.generateKey();
         DESX desx = new DESX();
-        byte[] test = new byte[]{127,23,12,123};
+        byte[] test = new byte[]{1,1,1,1,1,1,1,1};
         byte[] testKey = new byte[]{1,2,3,4,5,6};
         key.generateKey();
         key.generatePermutedKeys(key.getKey(1));
@@ -42,10 +42,13 @@ public class ApplicationGUI extends Application {
 
 
         try {
-            desx.feistelFunction(test, testKey);
+//            test(desx.feistelFunction(test, testKey));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+            desx.cipher(test, key);
+
+
 //        launch();
     }
 }

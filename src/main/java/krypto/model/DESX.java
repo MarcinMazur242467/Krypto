@@ -168,11 +168,11 @@ public class DESX {
         };
         byte[] output = new byte[4];
         for (int i = 0; i < PblockPermutationTable.length; i++) {
-            int index = PblockPermutationTable[i] - 1;
-            int byteIndex = index / 8;
-            int bitIndex = index % 8;
-            byte mask = (byte) (1 << (8 - bitIndex));
-            output[i] = (byte) ((block[byteIndex] & mask) != 0 ? 1 : 0);
+            byte index = (byte) (PblockPermutationTable[i] - 1); // subtract 1 to adjust for 0-based indexing
+            byte byteIndex = (byte) (index / 8); // calculate the index of the byte that contains the bit
+            byte bitIndex = (byte) (7 - (index % 8)); // calculate the index of the bit within the byte
+            byte bit = (byte) ((block[byteIndex] >> bitIndex) & 0x01); // extract the bit at the specified position
+            output[i / 8] |= (bit << (7 - (i % 8))); // set the bit in the corresponding position in the permuted key
         }
 
         return output;
@@ -202,34 +202,71 @@ public class DESX {
 
     public byte[] feistelFunction(byte[] block, byte[] permutedKey) throws Exception {
         if(block.length != 4){
+            System.out.println(block.length);
             throw new Exception("Invalid block size");
         }
         if(permutedKey.length !=6){
             throw new Exception("Invalid key size");
         }
         byte [] extendedBlock  = extendedPermutation(block);
-        BigInteger extebdedPermutationBlock = new BigInteger(extendedBlock);
-        BigInteger secretKey = new BigInteger(permutedKey);
-//        test(extendedBlock);
-//        test(permutedKey);
-        byte[] extendedBlockXorKey = extebdedPermutationBlock.xor(secretKey).toByteArray();
-//        test(extendedBlockXorKey);
-        byte[][] result = new byte[8][1];
+        byte [] extendedBlockXorKey = new byte[6];
+        for(int i=0;i<6;i++){
+            extendedBlockXorKey[i] = (byte) (extendedBlock[i]^permutedKey[i]);
+        }
+        byte[][] input = new byte[8][1];
         byte[][] output = new byte[8][1];
         for (int i = 0; i < 8; i++) {// gdzies w forze jest blad
             int startIndex = i * 6 / 8;
             int shift = 2 * (i * 6 % 8);
-            result[i][0] = (byte) ((extendedBlockXorKey[startIndex] >> shift) & 0x3F);
-            int row = ((result[i][0] & 0b100000) >> 4) | (result[i][0] & 0b000001);
-            int col = (result[i][0] & 0b011110) >> 1;
+            input[i][0] = (byte) ((extendedBlockXorKey[startIndex] >> shift) & 0x3F);
+            int row = ((input[i][0] & 0b100000) >> 4) | (input[i][0] & 0b000001);
+            int col = (input[i][0] & 0b011110) >> 1;
             output[i][0] = (byte) S_BOXES[i][row][col];
         }
+        byte[] resultt = new byte[4]; // inicjalizacja wyjściowej tablicy 4 bajtów
 
+// iteracja po wejściowej tablicy
+        for (int i = 0; i < 8; i++) {
+            // odczytaj bajt z wejściowej tablicy
+            byte b = output[i][0];
 
+            // wybierz tylko 4 najmniej znaczących bitów
+            int fourBits = b & 0x0F;
 
-//        return PblockPermutation(bytes);
-        return new byte[8];
+            // oblicz pozycję w wyjściowej tablicy
+            int dupaIndex = i / 2;
+
+            // oblicz przesunięcie bitowe w wyjściowym słowie
+            int shift = (i % 2) * 4;
+
+            // zapisz 4-bitową wartość w wyjściowym słowie
+            resultt[dupaIndex] |= fourBits << shift;
+        }
+        return PblockPermutation(resultt);
     }
+
+    public byte[] finalPermutation(byte[] block) {
+        byte[] permutedBock = new byte[8];
+        byte[] finalPermutationTable = new byte[]{
+                40, 8, 48, 16, 56, 24, 64, 32,
+                39, 7, 47, 15, 55, 23, 63, 31,
+                38, 6, 46, 14, 54, 22, 62, 30,
+                37, 5, 45, 13, 53, 21, 61, 29,
+                36, 4, 44, 12, 52, 20, 60, 28,
+                35, 3, 43, 11, 51, 19, 59, 27,
+                34, 2, 42, 10, 50, 18, 58, 26,
+                33, 1, 41, 9, 49, 17, 57, 25
+        };
+        for (int i = 0; i < finalPermutationTable.length; i++) {
+            int index = finalPermutationTable[i] - 1; // subtract 1 to adjust for 0-based indexing
+            int byteIndex = index / 8; // calculate the index of the byte that contains the bit
+            int bitIndex = 7 - (index % 8); // calculate the index of the bit within the byte
+            byte bit = (byte) ((block[byteIndex] >> bitIndex) & 0x01); // extract the bit at the specified position
+            permutedBock[i / 8] |= (bit << (7 - (i % 8))); // set the bit in the corresponding position in the permuted key
+        }
+        return permutedBock;
+    }
+
 
     public static void test(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
@@ -254,16 +291,38 @@ public class DESX {
 
 
 
-    public void cipher(byte[] block, Key keys) throws Exception {
+    public byte[] cipher(byte[] block, Key keys) throws Exception {
         if(block.length != 8){
             throw new Exception("Invalid block size");
         }
-        BigInteger BIGBlock = new BigInteger(block);
-        BigInteger BIGKey = new BigInteger(keys.getKey(0));
-        block = initialPermutation(BIGBlock.xor(BIGKey).toByteArray());
-        BigInteger permuttedBlock = new BigInteger(block);
-        byte[] rightBlock = permuttedBlock.shiftRight(32).and(new BigInteger("FFFFFFFF", 16)).toByteArray();
-        byte[] leftBlock = permuttedBlock.and(new BigInteger("FFFFFFFF", 16)).toByteArray();
+        for(int i=0;i<8;i++){
+            block[i] = (byte) (block[i]^keys.getKey(0)[i]);
+        }
+        block = initialPermutation(block);
+        byte[] leftBlock = new byte[4];
+        byte[] rightBlock = new byte[4];
 
+        System.arraycopy(block, 0, leftBlock, 0, 4);
+        System.arraycopy(block, 4, rightBlock, 0, 4);
+        keys.generatePermutedKeys(keys.getKey(1));
+
+        for(int i=0;i<16;i++){
+            byte[] byteRightBlock = rightBlock;
+            byte[] byteLeftBlock = leftBlock;
+            byte[] temp = feistelFunction(byteRightBlock,keys.getPermuttedKey(i));
+            byte[] temp2 = new byte[4];
+            for(int j=0;j<4;j++){
+                temp2[j] = (byte)(temp[j]^byteLeftBlock[j]);
+            }
+
+            rightBlock = temp2;
+            leftBlock = byteRightBlock;
+        }
+        byte[] byteLeftBlock = leftBlock;
+        byte[] byteRightBlock = rightBlock;
+        byte[] result = new byte[8];
+        System.arraycopy(byteLeftBlock, 0, result, 0, byteLeftBlock.length);
+        System.arraycopy(byteRightBlock, 0, result, byteLeftBlock.length, byteRightBlock.length);
+        return finalPermutation(result);
     }
 }
