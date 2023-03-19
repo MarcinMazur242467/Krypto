@@ -1,12 +1,8 @@
 package krypto.model;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 public class Text {
 
-    public static byte[][] divideIntoBlocks(String text){
+    public static byte[][] divideIntoBlocks(String text) {
         int counter = 0;
         byte[] bytes = text.getBytes();
         int blockCount = (int) Math.ceil((double) bytes.length / 8);
@@ -30,11 +26,6 @@ public class Text {
             }
         }
 //        blocks[blockCount] = ByteBuffer.allocate(4).putInt(counter).array();
-
-
         return blocks;
-    }
-    public static String blocksToString(byte[] block){
-        return new String(block, StandardCharsets.UTF_8);
     }
 }

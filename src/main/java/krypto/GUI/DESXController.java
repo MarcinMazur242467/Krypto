@@ -15,8 +15,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import krypto.model.*;
 import org.controlsfx.control.ToggleSwitch;
-import org.controlsfx.control.action.Action;
-
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static krypto.model.Key.bytesToHex;
-import static krypto.model.Text.blocksToString;
 
 public class DESXController implements Initializable {
 
@@ -261,9 +260,16 @@ public class DESXController implements Initializable {
         buffer = new byte[textInBlocks.length][8];
         DESX desx = new DESX();
         StringBuilder stringBuilder = new StringBuilder();
+//        // BUILT IN DES
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getKey(1),"DES");
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
         for (int i = 0; i < textInBlocks.length ; i++) {
             buffer[i] = desx.cipher(textInBlocks[i],key);
-            stringBuilder.append(blocksToString(buffer[i]));
+//            buffer[i]=cipher.doFinal(textInBlocks[i]);
+            for (byte b: buffer[i]){
+                stringBuilder.append((char)b);
+            }
         }
         CipherTextField.setText(stringBuilder.toString());
     }
@@ -271,15 +277,24 @@ public class DESXController implements Initializable {
     public void Decipher(ActionEvent event) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         DESX desx = new DESX();
+//        // BUILT IN DES
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getKey(1),"DES");
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE,secretKeySpec);
+
         for (int i = 0; i <buffer.length; i++) {
-            stringBuilder.append(blocksToString(desx.decipher(buffer[i],key)));
+//            buffer[i]= cipher.doFinal(buffer[i]);
+            buffer[i]=desx.decipher(buffer[i],key);
+            for (byte b: buffer[i]){
+                stringBuilder.append((char)b);
+            }
         }
         PlainTextField.setText(stringBuilder.toString());
     }
 
 
     @FXML
-    public void test() {
+    public void test(ActionEvent event) {
 
     }
 

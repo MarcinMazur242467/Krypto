@@ -6,14 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import krypto.model.Key;
-import krypto.model.DESX;
-
-import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Objects;
-
-import static krypto.model.DESX.test;
 
 public class ApplicationGUI extends Application {
     @Override
