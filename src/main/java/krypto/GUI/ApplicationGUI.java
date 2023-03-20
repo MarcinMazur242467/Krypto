@@ -6,6 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import krypto.model.DESX;
+import krypto.model.Key;
+
 import java.util.Objects;
 
 public class ApplicationGUI extends Application {
@@ -20,7 +23,29 @@ public class ApplicationGUI extends Application {
         stage.show();
     }
 
-    public static void main(String[] args){
-        launch();
+//    public static void main(String[] args){
+//        launch();
+//    }
+    public static void main(String[] args) throws Exception {
+        Key keys = new Key();
+        keys.generateKey();
+        keys.generateKey();
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder out = new StringBuilder();
+        byte[] block = {1, 1, 1, 1, 1, 1, 1, 1};
+        DESX desx = new DESX();
+
+        byte[] buffer = new byte[8];
+        buffer = desx.cipher(block, keys);
+        for (byte b : buffer) {
+            stringBuilder.append((char) b);
+        }
+        System.out.println(stringBuilder);
+        buffer = desx.decipher(buffer, keys);
+        for (byte b : buffer) {
+            out.append((char) b);
+        }
+        System.out.println(out);
     }
 }
+

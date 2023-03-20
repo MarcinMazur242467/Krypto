@@ -298,7 +298,6 @@ public class DESX {
     }
 
     public byte[] cipher(byte[] block, Key keys) throws Exception {
-
                if(block.length != 8){
             throw new Exception("Invalid block size");
         }
@@ -313,13 +312,11 @@ public class DESX {
         System.arraycopy(block, 4, rightBlock, 0, 4);
 
         keys.generatePermutedKeys(keys.getKey(1));
-
-        byte[] result = round(leftBlock, rightBlock, 0,true);
+        byte[] result = round(leftBlock, rightBlock, 0,false);
 
         result = permuteFunction(result, finalPermutationPattern);
 
         //        result = xor(block,keys.getKey(0));
-
         return result;
     }
 
