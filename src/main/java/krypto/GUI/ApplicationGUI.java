@@ -30,9 +30,10 @@ public class ApplicationGUI extends Application {
         Key keys = new Key();
         keys.generateKey();
         keys.generateKey();
+        keys.generateKey();
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder out = new StringBuilder();
-        byte[] block = {65, 65, 65, 65, 65, 65, 65, 65};
+        byte[] block = {68,85,80,65,68,85,80,65};
         DESX desx = new DESX();
 
         byte[] buffer = new byte[8];
