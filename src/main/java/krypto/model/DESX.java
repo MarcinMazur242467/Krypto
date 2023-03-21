@@ -1,5 +1,7 @@
 package krypto.model;
 
+import java.nio.ByteBuffer;
+
 public class DESX {
 
     private static final int[][][] S_BOXES = {
@@ -113,6 +115,7 @@ public class DESX {
         System.out.println(binaryOutput);
     }
 
+
     public byte[] permuteFunction(byte[] block, byte[] permutationPattern) {
         byte[] output = new byte[permutationPattern.length / 8];
         for (int i = 0; i < permutationPattern.length; i++) {
@@ -124,7 +127,15 @@ public class DESX {
         }
         return output;
     }
-
+    public static byte[] rotateBits(byte[] arr) {
+        int carry = (arr[0] & 0x80) != 0 ? 1 : 0;
+        for (int i = 0; i < arr.length; i++) {
+            int nextCarry = (arr[i] & 0x80) != 0 ? 1 : 0;
+            arr[i] = (byte)((arr[i] << 1) | carry);
+            carry = nextCarry;
+        }
+        return arr;
+    }
     public byte[] feistelFunction(byte[] block, byte[] permutedKey) throws Exception {
 
         if (block.length != 4) {
@@ -138,17 +149,31 @@ public class DESX {
 
         byte[] extendedBlockXorKey = xor(extendedBlock,permutedKey);
 
+
         byte[][] input = new byte[8][1];
         byte[][] output = new byte[8][1];
-
-        for (int i = 0; i < 8; i++) {// gdzies w forze jest blad
-            int startIndex = i * 6 / 8;
-            int shift = 2 * (i * 6 % 8);
-            input[i][0] = (byte) ((extendedBlockXorKey[startIndex] >> shift) & 0x3F);
-            int row = ((input[i][0] & 0b100000) >> 4) | (input[i][0] & 0b000001);
-            int col = (input[i][0] & 0b011110) >> 1;
+        for (int i = 0; i < 8; i++) {
+            byte temp = (byte) (extendedBlockXorKey[0]&0xfc);
+            temp>>=2;
+            input[i][0]=temp;
+            int row = ((temp & 0b100000) >> 4) | (temp & 0b000001);
+            int col = (temp & 0b011110) >> 1;
+            for (int j = 0; j < 6; j++) {
+                rotateBits(extendedBlockXorKey);
+            }
             output[i][0] = (byte) S_BOXES[i][row][col];
         }
+        test(input[0]);
+        test(input[1]);
+        test(input[2]);
+        test(input[3]);
+        test(input[4]);
+        test(input[5]);
+        test(input[6]);
+        test(input[7]);
+        System.out.println();
+
+
         byte[] result = new byte[4]; // inicjalizacja wyjściowej tablicy 4 bajtów
 
 // iteracja po wejściowej tablicy
@@ -286,7 +311,6 @@ public class DESX {
             System.arraycopy(left, 0, result, 0, left.length);
             System.arraycopy(right, 0, result, left.length, right.length);
 
-            test(result);
             return result;
         }
         if(reverse){

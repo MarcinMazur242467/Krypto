@@ -32,7 +32,7 @@ public class ApplicationGUI extends Application {
         keys.generateKey();
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder out = new StringBuilder();
-        byte[] block = {1, 1, 1, 1, 1, 1, 1, 1};
+        byte[] block = {65, 65, 65, 65, 65, 65, 65, 65};
         DESX desx = new DESX();
 
         byte[] buffer = new byte[8];
