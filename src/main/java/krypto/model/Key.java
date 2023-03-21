@@ -97,65 +97,29 @@ public class Key implements Serializable {
         return shitfR.or(shitfL).toByteArray();
     }
 
-//    public void generatePermutedKeys(byte[] key) {
-////        test(key);
-////        key = new byte[key.length - 1];
-////        System.arraycopy(key, 1, key, 0, key.length - 1);
-////        test(key);
-//        //  generalnie ten klucz jest 64 bit z czego 1 byte to same 0; niby w prezentacji jest napisane:[...]nastépnie z pozostaych 56 bitow tworzony jest 16 podkluczy[...]"
-//        byte[] permutedKey = permuteFunction(key, PC1Pattern);
-//        BigInteger bigNum = new BigInteger(1, permutedKey);
-//        byte[] rightKey = bigNum.shiftRight(28).and(new BigInteger("FFFFFFF", 16)).toByteArray();
-//        byte[] leftKey = bigNum.and(new BigInteger("FFFFFFF", 16)).toByteArray();
-//        for (int i = 0; i < 16; i++) {
-//            if (i == 0 || i == 1 || i == 8 || i == 15) {
-//                rightKey = bitRotateLeftByOne(rightKey);
-//                leftKey = bitRotateLeftByOne(leftKey);
-//            } else {
-//                rightKey = bitRotateLeftByTwo(rightKey);
-//                leftKey = bitRotateLeftByTwo(leftKey);
-//            }
-//            BigInteger bigIntegerLeft = new BigInteger(1, rightKey);
-//            BigInteger bigIntegerRight = new BigInteger(1, leftKey);
-//            BigInteger bigInteger = bigIntegerRight.shiftLeft(28).or(bigIntegerLeft);
-//            permutedKey = bigInteger.toByteArray();
-//
-//            permutedKey = permuteFunction(permutedKey, PC2Pattern);
-//
-//            permuttedKeyList.add(permutedKey);
-//        }
-//    }
     public void generatePermutedKeys(byte[] key) {
-        byte [] key1 = {1,1,1,1,1,1};
-        byte [] key2 = {2,2,2,2,2,2};
-        byte [] key3 = {3,3,3,3,3,3};
-        byte [] key4 = {4,4,4,4,4,4};
-        byte [] key5 = {5,5,5,5,5,5};
-        byte [] key6 = {6,6,6,6,6,6};
-        byte [] key7 = {7,7,7,7,7,7};
-        byte [] key8 = {8,8,8,8,8,8};
-        byte [] key9 = {9,9,9,9,9,9};
-        byte [] key10 = {10,10,10,10,10,10};
-        byte [] key11 = {11,11,11,11,11,11};
-        byte [] key12 = {12,12,12,12,12,12};
-        byte [] key13 = {13,13,13,13,13,13};
-        byte [] key14 = {14,14,14,14,14,14};
-        byte [] key15 = {15,15,15,15,15,15};
-        byte [] key16 = {16,16,16,16,16,16};
-        permuttedKeyList.add(key1);
-        permuttedKeyList.add(key2);
-        permuttedKeyList.add(key3);
-        permuttedKeyList.add(key4);
-        permuttedKeyList.add(key5);
-        permuttedKeyList.add(key6);
-        permuttedKeyList.add(key7);
-        permuttedKeyList.add(key8);
-        permuttedKeyList.add(key9);
-        permuttedKeyList.add(key10);
-        permuttedKeyList.add(key11);
-        permuttedKeyList.add(key12);
-        permuttedKeyList.add(key13);
-        permuttedKeyList.add(key14);
-        permuttedKeyList.add(key15);
-        permuttedKeyList.add(key16);}
+        byte[] permutedKey = permuteFunction(key, PC1Pattern);
+        BigInteger bigNum = new BigInteger(1, permutedKey);
+        byte[] rightKey = bigNum.shiftRight(28).and(new BigInteger("FFFFFFF", 16)).toByteArray();
+        byte[] leftKey = bigNum.and(new BigInteger("FFFFFFF", 16)).toByteArray();
+        for (int i = 0; i < 16; i++) {
+            if (i == 0 || i == 1 || i == 8 || i == 15) {
+                rightKey = bitRotateLeftByOne(rightKey);
+                leftKey = bitRotateLeftByOne(leftKey);
+            } else {
+                rightKey = bitRotateLeftByTwo(rightKey);
+                leftKey = bitRotateLeftByTwo(leftKey);
+            }
+            test(leftKey);
+            test(rightKey);
+            BigInteger bigIntegerLeft = new BigInteger(1, rightKey);
+            BigInteger bigIntegerRight = new BigInteger(1, leftKey);
+            BigInteger bigInteger = bigIntegerRight.shiftLeft(28).or(bigIntegerLeft);
+            permutedKey = bigInteger.toByteArray();
+            test(permutedKey);
+            permutedKey = permuteFunction(permutedKey, PC2Pattern);
+
+            permuttedKeyList.add(permutedKey);
+        }
+    }
 }

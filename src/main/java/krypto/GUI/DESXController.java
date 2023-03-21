@@ -15,18 +15,18 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import krypto.model.*;
 import org.controlsfx.control.ToggleSwitch;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static krypto.model.Key.bytesToHex;
+import static krypto.model.Text.divideFileIntoBlocks;
+import static krypto.model.Text.divideStringIntoBlocks;
 
 public class DESXController implements Initializable {
 
@@ -194,9 +194,9 @@ public class DESXController implements Initializable {
 
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                List<String> list = manager.read();
-                for (String s : list) {
-                    PlainTextField.appendText(s + "\n");
+                byte[] list = manager.read();
+                for (byte s : list) {
+                    PlainTextField.appendText((char)s + "");
                 }
             }
         } catch (Exception ex) {
@@ -213,9 +213,10 @@ public class DESXController implements Initializable {
 
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                List<String> list = manager.read();
-                for (String s : list) {
-                    CipherTextField.appendText(s + "\n");
+                byte[] list = manager.read();
+                buffer = divideFileIntoBlocks(list);
+                for (byte s : list) {
+                    CipherTextField.appendText((char)s + "");
                 }
             }
         } catch (Exception ex) {
@@ -256,17 +257,12 @@ public class DESXController implements Initializable {
 
     @FXML
     public void Cipher(ActionEvent event) throws Exception {
-        byte[][] textInBlocks = Text.divideIntoBlocks(PlainTextField.getText());
-        buffer = new byte[textInBlocks.length][8];
+        byte[][] textInBlocks = Text.divideStringIntoBlocks(PlainTextField.getText());
+        buffer = new byte[textInBlocks.length-1][8];
         DESX desx = new DESX();
         StringBuilder stringBuilder = new StringBuilder();
-//        // BUILT IN DES
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getKey(1),"DES");
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-        for (int i = 0; i < textInBlocks.length ; i++) {
+        for (int i = 0; i < textInBlocks.length-1 ; i++) {
             buffer[i] = desx.cipher(textInBlocks[i],key);
-//            buffer[i]=cipher.doFinal(textInBlocks[i]);
             for (byte b: buffer[i]){
                 stringBuilder.append((char)b);
             }
@@ -277,19 +273,14 @@ public class DESXController implements Initializable {
     public void Decipher(ActionEvent event) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         DESX desx = new DESX();
-//        // BUILT IN DES
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getKey(1),"DES");
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE,secretKeySpec);
-
-        for (int i = 0; i <buffer.length; i++) {
-//            buffer[i]= cipher.doFinal(buffer[i]);
-            buffer[i]=desx.decipher(buffer[i],key);
-            for (byte b: buffer[i]){
-                stringBuilder.append((char)b);
+            byte[][] temp = new byte[buffer.length][8];
+            for (int i = 0; i <buffer.length; i++) {
+                temp[i]=desx.decipher(buffer[i],key);
+                for (byte b: temp[i]){
+                    stringBuilder.append((char)b);
+                }
             }
-        }
-        PlainTextField.setText(stringBuilder.toString());
+            PlainTextField.setText(stringBuilder.toString());
     }
 
 
@@ -308,9 +299,14 @@ public class DESXController implements Initializable {
                 PlainTextField.setText("");
                 PlainTextField.setDisable(true);
                 CipherTextField.setDisable(true);
+                LoadCipherFromFIleButton.setDisable(false);
+                LoadTextFromFileButton.setDisable(false);
+
             } else {
                 PlainTextField.setDisable(false);
                 CipherTextField.setDisable(false);
+                LoadCipherFromFIleButton.setDisable(true);
+                LoadTextFromFileButton.setDisable(true);
             }
         });
     }

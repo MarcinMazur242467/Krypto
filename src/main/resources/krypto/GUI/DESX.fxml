@@ -31,8 +31,8 @@
             <Label layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="166.0" text="Szyfrowanie / Deszyfrowanie" />
             <Label layoutX="482.0" layoutY="57.0" prefHeight="32.0" prefWidth="197.0" text="Otwórz plik zawierający szyfrogram" />
             <Label layoutX="41.0" layoutY="52.0" prefHeight="39.0" prefWidth="197.0" text="Otwórz plik zawierający tekst jawny" />
-            <Button fx:id="LoadTextFromFileButton" layoutX="265.0" layoutY="59.0" mnemonicParsing="false" onAction="#loadText" style="-fx-font-weight: bold;" text="Otwórz" />
-            <Button fx:id="LoadCipherFromFIleButton" layoutX="708.0" layoutY="59.0" mnemonicParsing="false" onAction="#loadCipher" style="-fx-font-weight: bold;" text="Otwórz" />
+            <Button fx:id="LoadTextFromFileButton" disable="true" layoutX="265.0" layoutY="59.0" mnemonicParsing="false" onAction="#loadText" style="-fx-font-weight: bold;" text="Otwórz" />
+            <Button fx:id="LoadCipherFromFIleButton" disable="true" layoutX="708.0" layoutY="59.0" mnemonicParsing="false" onAction="#loadCipher" style="-fx-font-weight: bold;" text="Otwórz" />
             <Button fx:id="CIpherButton" layoutX="377.0" layoutY="150.0" mnemonicParsing="false" onAction="#Cipher" style="-fx-font-weight: bold;" text="Szyfruj" />
             <Button fx:id="DecipherButton" layoutX="371.0" layoutY="190.0" mnemonicParsing="false" onAction="#Decipher" style="-fx-font-weight: bold;" text="Deszyfruj" />
             <ToggleSwitch fx:id="switchF" layoutX="371.0" layoutY="227.0" selected="true" />

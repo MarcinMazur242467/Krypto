@@ -23,30 +23,8 @@ public class ApplicationGUI extends Application {
         stage.show();
     }
 
-//    public static void main(String[] args){
-//        launch();
-//    }
-    public static void main(String[] args) throws Exception {
-        Key keys = new Key();
-        keys.generateKey();
-        keys.generateKey();
-        keys.generateKey();
-        StringBuilder stringBuilder = new StringBuilder();
-        StringBuilder out = new StringBuilder();
-        byte[] block = {68,85,80,65,68,85,80,65};
-        DESX desx = new DESX();
-
-        byte[] buffer = new byte[8];
-        buffer = desx.cipher(block, keys);
-        for (byte b : buffer) {
-            stringBuilder.append((char) b);
-        }
-        System.out.println(stringBuilder);
-        buffer = desx.decipher(buffer, keys);
-        for (byte b : buffer) {
-            out.append((char) b);
-        }
-        System.out.println(out);
+    public static void main(String[] args){
+        launch();
     }
 }
 

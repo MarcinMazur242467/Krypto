@@ -248,7 +248,7 @@ public class DESX {
     }
 
     public byte[] decipher(byte[] block, Key keys) throws Exception {
-
+        test(block);
         if (block.length != 8) {
             throw new Exception("Invalid block size");
         }

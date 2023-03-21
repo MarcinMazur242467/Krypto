@@ -1,6 +1,9 @@
 package krypto.model;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,20 +15,9 @@ public class FileManager {
         this.fileName = fileName;
     }
 
-    public List<String> read() {
-        List<String> list = new ArrayList<>();
-        try {
-            Scanner scanner = new Scanner(fileName);
-
-            while (scanner.hasNextLine()) {
-                list.add(scanner.nextLine());
-            }
-
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return list;
+    public byte[] read() throws IOException {
+        Path path = fileName.toPath();
+        return Files.readAllBytes(path);
     }
 
     public void write(String s) throws IOException {
