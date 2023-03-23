@@ -17,6 +17,8 @@ import krypto.model.*;
 import org.controlsfx.control.ToggleSwitch;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
@@ -82,6 +84,8 @@ public class DESXController implements Initializable {
 
     private Key key = new Key();
     private byte[][] buffer;
+
+    private byte[] filesss;
 
     @FXML
     public void generateKeys(ActionEvent event) {
@@ -186,7 +190,7 @@ public class DESXController implements Initializable {
     }
 
     @FXML
-    public void loadText(ActionEvent event) {
+    public void loadText(ActionEvent event) throws IOException {
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -202,6 +206,20 @@ public class DESXController implements Initializable {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+
+//        File file = new File("D:/JavaProjects/Krypto/src/main/java/krypto/GUI/4IS_1-6.pdf");
+//        byte[] bytes = new byte[(int) file.length()];
+//
+//        try (FileInputStream fis = new FileInputStream(file)) {
+//            fis.read(bytes);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        filesss= bytes;
+//        String fileText = new String(bytes);
+//
+//        PlainTextField.setText(fileText);
     }
 
     @FXML
@@ -225,7 +243,7 @@ public class DESXController implements Initializable {
     }
 
     @FXML
-    public void saveText(ActionEvent event) {
+    public void saveText(ActionEvent event) throws IOException {
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -237,6 +255,14 @@ public class DESXController implements Initializable {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+//        File newFile = new File("C:/Users/piotr/OneDrive/Pulpit/lldsaldlas.pdf");
+//        FileManager m = new FileManager(newFile);
+//        newFile.createNewFile();
+//        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+//            fos.write(filesss);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @FXML
