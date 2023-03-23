@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -84,8 +85,8 @@ public class DESXController implements Initializable {
 
     private Key key = new Key();
     private byte[][] buffer;
-
-    private byte[] filesss;
+    private byte[] textInByteArray;
+    private byte[] cipherInByteArray;
 
     @FXML
     public void generateKeys(ActionEvent event) {
@@ -190,7 +191,7 @@ public class DESXController implements Initializable {
     }
 
     @FXML
-    public void loadText(ActionEvent event) throws IOException {
+    public void loadText(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -198,28 +199,12 @@ public class DESXController implements Initializable {
 
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                byte[] list = manager.read();
-                for (byte s : list) {
-                    PlainTextField.appendText((char)s + "");
-                }
+                textInByteArray = manager.read();
+                PlainTextField.setText(Key.bytesToHex(textInByteArray));
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-
-//        File file = new File("D:/JavaProjects/Krypto/src/main/java/krypto/GUI/4IS_1-6.pdf");
-//        byte[] bytes = new byte[(int) file.length()];
-//
-//        try (FileInputStream fis = new FileInputStream(file)) {
-//            fis.read(bytes);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        filesss= bytes;
-//        String fileText = new String(bytes);
-//
-//        PlainTextField.setText(fileText);
     }
 
     @FXML
@@ -231,11 +216,9 @@ public class DESXController implements Initializable {
 
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                byte[] list = manager.read();
-                buffer = divideFileIntoBlocks(list);
-                for (byte s : list) {
-                    CipherTextField.appendText((char)s + "");
-                }
+                cipherInByteArray = manager.read();
+                buffer = divideFileIntoBlocks(cipherInByteArray);               //chyba nic nie pokrecilem tutaj, ale trzeba i tak przesledzic wspolnie najlepiej
+                CipherTextField.setText(Key.bytesToHex(cipherInByteArray));
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -243,26 +226,19 @@ public class DESXController implements Initializable {
     }
 
     @FXML
-    public void saveText(ActionEvent event) throws IOException {
+    public void saveText(ActionEvent event) {
+
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                manager.write(PlainTextField.getText());
+                manager.write(PlainTextField.getText().getBytes()); // nie wiem czy getbytes czegos nie zwali (zastanowic sie czy moze buffer jakis do tego uzyc)
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-//        File newFile = new File("C:/Users/piotr/OneDrive/Pulpit/lldsaldlas.pdf");
-//        FileManager m = new FileManager(newFile);
-//        newFile.createNewFile();
-//        try (FileOutputStream fos = new FileOutputStream(newFile)) {
-//            fos.write(filesss);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     @FXML
@@ -273,7 +249,7 @@ public class DESXController implements Initializable {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                manager.write(CipherTextField.getText());
+                manager.write(CipherTextField.getText().getBytes()); // nie wiem czy getbytes czegos nie zwali (zastanowic sie czy moze buffer jakis do tego uzyc)
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -283,7 +259,14 @@ public class DESXController implements Initializable {
 
     @FXML
     public void Cipher(ActionEvent event) throws Exception {
-        byte[][] textInBlocks = Text.divideStringIntoBlocks(PlainTextField.getText());
+        byte[][] textInBlocks;
+//        if(!switchF.isSelected()){
+//            textInBlocks = Text.divideFileIntoBlocks(textInByteArray);  zastanowic sie nad tym, bo to moze byc fajne, ale juz nie mam glowy do tego
+//        }
+//        else {
+            textInBlocks = Text.divideStringIntoBlocks(PlainTextField.getText());
+//        }
+
         buffer = new byte[textInBlocks.length-1][8];
         DESX desx = new DESX();
         StringBuilder stringBuilder = new StringBuilder();
@@ -293,12 +276,14 @@ public class DESXController implements Initializable {
                 stringBuilder.append((char)b);
             }
         }
+        cipherInByteArray=Text.flatten(buffer);
         CipherTextField.setText(stringBuilder.toString());
     }
     @FXML
     public void Decipher(ActionEvent event) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         DESX desx = new DESX();
+        textInByteArray = Text.flatten(buffer);
             byte[][] temp = new byte[buffer.length][8];
             for (int i = 0; i <buffer.length; i++) {
                 temp[i]=desx.decipher(buffer[i],key);
@@ -312,7 +297,7 @@ public class DESXController implements Initializable {
 
     @FXML
     public void test(ActionEvent event) {
-
+        System.out.println(buffer.length);
     }
 
     @Override

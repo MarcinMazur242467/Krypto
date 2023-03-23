@@ -47,4 +47,19 @@ public class Text {
         }
         return blocks;
     }
+
+    public static byte[] flatten(byte[][] arr) {
+        int length = 0;
+        for (byte[] row : arr) {
+            length += row.length;
+        }
+        byte[] result = new byte[length];
+        int i = 0;
+        for (byte[] row : arr) {
+            for (byte b : row) {
+                result[i++] = b;
+            }
+        }
+        return result;
+    }
 }
