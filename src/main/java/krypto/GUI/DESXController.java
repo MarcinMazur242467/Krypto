@@ -234,7 +234,8 @@ public class DESXController implements Initializable {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                manager.write(PlainTextField.getText().getBytes()); // nie wiem czy getbytes czegos nie zwali (zastanowic sie czy moze buffer jakis do tego uzyc)
+                byte[] bytes = Arrays.copyOfRange(textInByteArray,0,textInByteArray.length-2);
+                manager.write(bytes);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -249,7 +250,7 @@ public class DESXController implements Initializable {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                manager.write(CipherTextField.getText().getBytes()); // nie wiem czy getbytes czegos nie zwali (zastanowic sie czy moze buffer jakis do tego uzyc)
+                manager.write(cipherInByteArray); // nie wiem czy getbytes czegos nie zwali (zastanowic sie czy moze buffer jakis do tego uzyc)
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -260,12 +261,12 @@ public class DESXController implements Initializable {
     @FXML
     public void Cipher(ActionEvent event) throws Exception {
         byte[][] textInBlocks;
-//        if(!switchF.isSelected()){
-//            textInBlocks = Text.divideFileIntoBlocks(textInByteArray);  zastanowic sie nad tym, bo to moze byc fajne, ale juz nie mam glowy do tego
-//        }
-//        else {
+        if(!switchF.isSelected()){
+            textInBlocks = Text.divideFileIntoBlocks(textInByteArray);
+        }
+        else {
             textInBlocks = Text.divideStringIntoBlocks(PlainTextField.getText());
-//        }
+        }
 
         buffer = new byte[textInBlocks.length-1][8];
         DESX desx = new DESX();
@@ -277,13 +278,12 @@ public class DESXController implements Initializable {
             }
         }
         cipherInByteArray=Text.flatten(buffer);
-        CipherTextField.setText(stringBuilder.toString());
+        CipherTextField.setText(Key.bytesToHex(cipherInByteArray));
     }
     @FXML
     public void Decipher(ActionEvent event) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         DESX desx = new DESX();
-        textInByteArray = Text.flatten(buffer);
             byte[][] temp = new byte[buffer.length][8];
             for (int i = 0; i <buffer.length; i++) {
                 temp[i]=desx.decipher(buffer[i],key);
@@ -291,7 +291,8 @@ public class DESXController implements Initializable {
                     stringBuilder.append((char)b);
                 }
             }
-            PlainTextField.setText(stringBuilder.toString());
+            textInByteArray = Text.flatten(temp);
+            PlainTextField.setText(Key.bytesToHex(textInByteArray));
     }
 
 
