@@ -6,8 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import krypto.model.DESX;
-import krypto.model.Key;
 
 import java.util.Objects;
 
@@ -23,7 +21,7 @@ public class ApplicationGUI extends Application {
         stage.show();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch();
     }
 }

@@ -14,17 +14,18 @@ import java.util.Objects;
 public class PlecakController {
     @FXML
     public void changeSceneToMain(ActionEvent event) throws IOException {
-        Parent DESXViewParent  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
+        Parent DESXViewParent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
         Scene DESXViewScene = new Scene(DESXViewParent);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(DESXViewScene);
         window.show();
     }
+
     @FXML
     public void changeSceneToDESX(ActionEvent event) throws IOException {
-        Parent DESXViewParent  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("DESX.fxml")));
+        Parent DESXViewParent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("DESX.fxml")));
         Scene DESXViewScene = new Scene(DESXViewParent);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(DESXViewScene);
         window.show();
     }

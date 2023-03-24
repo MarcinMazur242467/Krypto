@@ -7,47 +7,72 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krypto.GUI.DESXController">
-   <children>
-      <AnchorPane prefHeight="209.0" prefWidth="812.0" style="-fx-border-color: #00bfff; -fx-border-width: 2px; -fx-border-insets: 10px;">
-         <children>
-            <Label layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="50.0" text="Klucz" />
-            <Label layoutX="41.0" layoutY="50.0" prefHeight="32.0" prefWidth="93.0" text="Wartość Klucza I" />
-            <Label layoutX="192.0" layoutY="50.0" prefHeight="32.0" prefWidth="93.0" text="Wartość Klucza II" />
-            <Label layoutX="342.0" layoutY="50.0" prefHeight="32.0" prefWidth="100.0" text="Wartość Klucza III" />
-            <TextField fx:id="KeyVal1" layoutX="41.0" layoutY="82.0" prefHeight="25.0" prefWidth="139.0" />
-            <TextField fx:id="KeyVal2" layoutX="192.0" layoutY="82.0" prefHeight="25.0" prefWidth="139.0" />
-            <TextField fx:id="KeyVal3" layoutX="342.0" layoutY="82.0" prefHeight="25.0" prefWidth="149.0" />
-            <Button fx:id="GenerateKeyButton" layoutX="533.0" layoutY="82.0" mnemonicParsing="false" onAction="#generateKeys" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;" text="Generuj klucze" />
-            <Label layoutX="52.0" layoutY="135.0" prefHeight="39.0" prefWidth="128.0" text="Wczytaj klucze z pliku" />
-            <Button fx:id="ReadKeyButton" layoutX="177.0" layoutY="142.0" mnemonicParsing="false" onAction="#loadKeyFromFile" prefHeight="25.0" prefWidth="76.0" style="-fx-font-weight: bold;" text="Wczytaj" />
-            <Button fx:id="WriteKeyButton" layoutX="481.0" layoutY="142.0" mnemonicParsing="false" onAction="#saveKeysToFile" style="-fx-font-weight: bold;" text="Zapisz" />
-            <Label layoutX="359.0" layoutY="146.0" text="Zapisz klucze do pliku" />
-            <Button fx:id="LoadKeyButton1" layoutX="662.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadKey" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;" text="Wczytaj klucze" />
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutY="200.0" prefHeight="401.0" prefWidth="806.0" style="-fx-border-color: #00bfff; -fx-border-width: 2px; -fx-padding: 10px; -fx-border-insets: 10px;">
-         <children>
-            <Label layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="166.0" text="Szyfrowanie / Deszyfrowanie" />
-            <Label layoutX="482.0" layoutY="57.0" prefHeight="32.0" prefWidth="197.0" text="Otwórz plik zawierający szyfrogram" />
-            <Label layoutX="41.0" layoutY="52.0" prefHeight="39.0" prefWidth="197.0" text="Otwórz plik zawierający tekst jawny" />
-            <Button fx:id="LoadTextFromFileButton" disable="true" layoutX="265.0" layoutY="59.0" mnemonicParsing="false" onAction="#loadText" style="-fx-font-weight: bold;" text="Otwórz" />
-            <Button fx:id="LoadCipherFromFIleButton" disable="true" layoutX="708.0" layoutY="59.0" mnemonicParsing="false" onAction="#loadCipher" style="-fx-font-weight: bold;" text="Otwórz" />
-            <Button fx:id="CIpherButton" layoutX="377.0" layoutY="150.0" mnemonicParsing="false" onAction="#Cipher" style="-fx-font-weight: bold;" text="Szyfruj" />
-            <Button fx:id="DecipherButton" layoutX="371.0" layoutY="190.0" mnemonicParsing="false" onAction="#Decipher" style="-fx-font-weight: bold;" text="Deszyfruj" />
-            <ToggleSwitch fx:id="switchF" layoutX="371.0" layoutY="227.0" selected="true" />
-            <Label layoutX="362.0" layoutY="228.0" text="Plik" />
-            <Label layoutX="436.0" layoutY="228.0" text="Tekst" />
-            <Label layoutX="41.0" layoutY="320.0" text="Zapisz plik zawierający tekst jawny" />
-            <Button disable="true" layoutX="174.0" layoutY="365.0" mnemonicParsing="false" onAction="#changeSceneToPlecakowy" style="-fx-font-weight: bold;" text="Plecakowy" />
-            <Button layoutX="43.0" layoutY="365.0" mnemonicParsing="false" onAction="#changeSceneToMain" style="-fx-font-weight: bold;" text="Strona Startowa" />
-            <Label layoutX="480.0" layoutY="320.0" text="Zapisz plik zazwierający szyfrogram" />
-            <Button fx:id="SaveTextToFileButton" layoutX="271.0" layoutY="316.0" mnemonicParsing="false" onAction="#saveText" prefHeight="25.0" prefWidth="55.0" style="-fx-font-weight: bold;" text="Zapisz" />
-            <Button fx:id="SaveCpiherToFileButton" layoutX="701.0" layoutY="316.0" mnemonicParsing="false" onAction="#saveCipher" prefHeight="25.0" prefWidth="65.0" style="-fx-font-weight: bold;" text="Zapisz" />
-            <Button fx:id="TestButton" layoutX="379.0" layoutY="340.0" mnemonicParsing="false" onAction="#test" text="test" />
-            <TextArea fx:id="PlainTextField" layoutX="37.0" layoutY="98.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="209.0" prefWidth="286.0" promptText="Wprowadź tekst jawny..." wrapText="true" />
-            <TextArea fx:id="CipherTextField" layoutX="480.0" layoutY="98.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="209.0" prefWidth="286.0" promptText="Wprowadź szyfrogram..." wrapText="true" />
-         </children>
-      </AnchorPane>
-   </children>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="krypto.GUI.DESXController">
+    <children>
+        <AnchorPane prefHeight="209.0" prefWidth="812.0"
+                    style="-fx-border-color: #00bfff; -fx-border-width: 2px; -fx-border-insets: 10px;">
+            <children>
+                <Label layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="50.0" text="Klucz"/>
+                <Label layoutX="41.0" layoutY="50.0" prefHeight="32.0" prefWidth="93.0" text="Wartość Klucza I"/>
+                <Label layoutX="192.0" layoutY="50.0" prefHeight="32.0" prefWidth="93.0" text="Wartość Klucza II"/>
+                <Label layoutX="342.0" layoutY="50.0" prefHeight="32.0" prefWidth="100.0" text="Wartość Klucza III"/>
+                <TextField fx:id="KeyVal1" layoutX="41.0" layoutY="82.0" prefHeight="25.0" prefWidth="139.0"/>
+                <TextField fx:id="KeyVal2" layoutX="192.0" layoutY="82.0" prefHeight="25.0" prefWidth="139.0"/>
+                <TextField fx:id="KeyVal3" layoutX="342.0" layoutY="82.0" prefHeight="25.0" prefWidth="149.0"/>
+                <Button fx:id="GenerateKeyButton" layoutX="533.0" layoutY="82.0" mnemonicParsing="false"
+                        onAction="#generateKeys" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;"
+                        text="Generuj klucze"/>
+                <Label layoutX="52.0" layoutY="135.0" prefHeight="39.0" prefWidth="128.0"
+                       text="Wczytaj klucze z pliku"/>
+                <Button fx:id="ReadKeyButton" layoutX="177.0" layoutY="142.0" mnemonicParsing="false"
+                        onAction="#loadKeyFromFile" prefHeight="25.0" prefWidth="76.0" style="-fx-font-weight: bold;"
+                        text="Wczytaj"/>
+                <Button fx:id="WriteKeyButton" layoutX="481.0" layoutY="142.0" mnemonicParsing="false"
+                        onAction="#saveKeysToFile" style="-fx-font-weight: bold;" text="Zapisz"/>
+                <Label layoutX="359.0" layoutY="146.0" text="Zapisz klucze do pliku"/>
+                <Button fx:id="LoadKeyButton1" layoutX="662.0" layoutY="82.0" mnemonicParsing="false"
+                        onAction="#loadKey" prefHeight="25.0" prefWidth="107.0" style="-fx-font-weight: bold;"
+                        text="Wczytaj klucze"/>
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutY="200.0" prefHeight="401.0" prefWidth="806.0"
+                    style="-fx-border-color: #00bfff; -fx-border-width: 2px; -fx-padding: 10px; -fx-border-insets: 10px;">
+            <children>
+                <Label layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="166.0"
+                       text="Szyfrowanie / Deszyfrowanie"/>
+                <Label layoutX="482.0" layoutY="57.0" prefHeight="32.0" prefWidth="197.0"
+                       text="Otwórz plik zawierający szyfrogram"/>
+                <Label layoutX="41.0" layoutY="52.0" prefHeight="39.0" prefWidth="197.0"
+                       text="Otwórz plik zawierający tekst jawny"/>
+                <Button fx:id="LoadTextFromFileButton" disable="true" layoutX="265.0" layoutY="59.0"
+                        mnemonicParsing="false" onAction="#loadText" style="-fx-font-weight: bold;" text="Otwórz"/>
+                <Button fx:id="LoadCipherFromFIleButton" disable="true" layoutX="708.0" layoutY="59.0"
+                        mnemonicParsing="false" onAction="#loadCipher" style="-fx-font-weight: bold;" text="Otwórz"/>
+                <Button fx:id="CIpherButton" layoutX="377.0" layoutY="150.0" mnemonicParsing="false" onAction="#Cipher"
+                        style="-fx-font-weight: bold;" text="Szyfruj"/>
+                <Button fx:id="DecipherButton" layoutX="371.0" layoutY="190.0" mnemonicParsing="false"
+                        onAction="#Decipher" style="-fx-font-weight: bold;" text="Deszyfruj"/>
+                <ToggleSwitch fx:id="switchF" layoutX="371.0" layoutY="227.0" selected="true"/>
+                <Label layoutX="362.0" layoutY="228.0" text="Plik"/>
+                <Label layoutX="436.0" layoutY="228.0" text="Tekst"/>
+                <Label layoutX="41.0" layoutY="320.0" text="Zapisz plik zawierający tekst jawny"/>
+                <Button disable="true" layoutX="174.0" layoutY="365.0" mnemonicParsing="false"
+                        onAction="#changeSceneToPlecakowy" style="-fx-font-weight: bold;" text="Plecakowy"/>
+                <Button layoutX="43.0" layoutY="365.0" mnemonicParsing="false" onAction="#changeSceneToMain"
+                        style="-fx-font-weight: bold;" text="Strona Startowa"/>
+                <Label layoutX="480.0" layoutY="320.0" text="Zapisz plik zazwierający szyfrogram"/>
+                <Button fx:id="SaveTextToFileButton" layoutX="271.0" layoutY="316.0" mnemonicParsing="false"
+                        onAction="#saveText" prefHeight="25.0" prefWidth="55.0" style="-fx-font-weight: bold;"
+                        text="Zapisz"/>
+                <Button fx:id="SaveCpiherToFileButton" layoutX="701.0" layoutY="316.0" mnemonicParsing="false"
+                        onAction="#saveCipher" prefHeight="25.0" prefWidth="65.0" style="-fx-font-weight: bold;"
+                        text="Zapisz"/>
+                <TextArea fx:id="PlainTextField" layoutX="37.0" layoutY="98.0" nodeOrientation="LEFT_TO_RIGHT"
+                          prefHeight="209.0" prefWidth="286.0" promptText="Wprowadź tekst jawny..." wrapText="true"/>
+                <TextArea fx:id="CipherTextField" layoutX="480.0" layoutY="98.0" nodeOrientation="LEFT_TO_RIGHT"
+                          prefHeight="209.0" prefWidth="286.0" promptText="Wprowadź szyfrogram..." wrapText="true"/>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

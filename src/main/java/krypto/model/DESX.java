@@ -151,10 +151,10 @@ public class DESX {
 
 
         byte[][] input = new byte[8][1];
-        for (int i = 7; i < 1; i++) {
+        for (int i = 7; i >= 0; i--) {
             byte temp = (byte) (extendedBlockXorKey[0] & 0xfc);
             temp >>= 2;
-            input[input.length][0] = temp;
+            input[input.length - 1][0] = temp;
             input[i][0] = temp;
 
             for (int j = 0; j < 6; j++) {
@@ -181,19 +181,20 @@ public class DESX {
             int fourBits = b & 0x0F;
 
             // oblicz pozycję w wyjściowej tablicy
-            int dupaIndex = i / 2;
+            int Index = i / 2;
 
             // oblicz przesunięcie bitowe w wyjściowym słowie
             int shift = (i % 2) * 4;
 
             // zapisz 4-bitową wartość w wyjściowym słowie
-            result[dupaIndex] |= fourBits << shift;
+            result[Index] |= fourBits << shift;
         }
 
         result = permuteFunction(result, PBoxPattern);
 
         return result;
     }
+
     public byte[] xor(byte[] arr1, byte[] arr2) {
         if (arr1.length != arr2.length) {
             throw new IllegalArgumentException("Byte arrays must be of equal length");
@@ -248,7 +249,6 @@ public class DESX {
     }
 
     public byte[] decipher(byte[] block, Key keys) throws Exception {
-        test(block);
         if (block.length != 8) {
             throw new Exception("Invalid block size");
         }

@@ -17,38 +17,26 @@ import krypto.model.*;
 import org.controlsfx.control.ToggleSwitch;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static krypto.model.Key.bytesToHex;
 import static krypto.model.Text.divideFileIntoBlocks;
-import static krypto.model.Text.divideStringIntoBlocks;
 
 public class DESXController implements Initializable {
 
 
     @FXML
     private ToggleSwitch switchF;
-    @FXML
-    private Button CIpherButton;
+
 
     @FXML
     private TextArea CipherTextField;
 
-    @FXML
-    private Button DecipherButton;
-
-    @FXML
-    private Button GenerateKeyButton;
-    @FXML
-    private Button TestButton;
 
     @FXML
     private TextField KeyVal1;
@@ -63,25 +51,11 @@ public class DESXController implements Initializable {
     private Button LoadCipherFromFIleButton;
 
     @FXML
-    private Button LoadKeyButton1;
-
-    @FXML
     private Button LoadTextFromFileButton;
 
     @FXML
     private TextArea PlainTextField;
 
-    @FXML
-    private Button ReadKeyButton;
-
-    @FXML
-    private Button SaveCpiherToFileButton;
-
-    @FXML
-    private Button SaveTextToFileButton;
-
-    @FXML
-    private Button WriteKeyButton;
 
     private Key key = new Key();
     private byte[][] buffer;
@@ -112,6 +86,9 @@ public class DESXController implements Initializable {
         key.resetKey();
         if (Objects.equals(KeyVal1.getText(), "") || Objects.equals(KeyVal2.getText(), "") || Objects.equals(KeyVal3.getText(), "")) {
             allert(Alert.AlertType.WARNING, "Błędny klucz", "Nie podałeś klucza! Musisz wpisać klucz jeszcze raz!");
+            return;
+        } else if (Objects.equals(KeyVal2.getText(), "1111111111111111")) {
+            allert(Alert.AlertType.WARNING, "Błędny klucz", "Drugi klucz nie może mieć takiej wartości!");
             return;
         }
         if (KeyVal1.getText().matches("[ABCDEF0123456789]*") && KeyVal2.getText().matches("[ABCDEF0123456789]*") && KeyVal3.getText().matches("[ABCDEF0123456789]*")) {
@@ -193,6 +170,7 @@ public class DESXController implements Initializable {
     @FXML
     public void loadText(ActionEvent event) {
         FileChooser chooser = new FileChooser();
+        StringBuilder stringBuilder = new StringBuilder();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
             File file = chooser.showOpenDialog(window);
@@ -200,8 +178,11 @@ public class DESXController implements Initializable {
             if (file != null) {
                 FileManager manager = new FileManager(file);
                 textInByteArray = manager.read();
-                PlainTextField.setText(Key.bytesToHex(textInByteArray));
+                for (byte b : textInByteArray) {
+                    stringBuilder.append((char) b);
+                }
             }
+            PlainTextField.setText(stringBuilder.toString());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -209,6 +190,7 @@ public class DESXController implements Initializable {
 
     @FXML
     public void loadCipher(ActionEvent event) {
+        StringBuilder stringBuilder = new StringBuilder();
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -217,9 +199,12 @@ public class DESXController implements Initializable {
             if (file != null) {
                 FileManager manager = new FileManager(file);
                 cipherInByteArray = manager.read();
-                buffer = divideFileIntoBlocks(cipherInByteArray);               //chyba nic nie pokrecilem tutaj, ale trzeba i tak przesledzic wspolnie najlepiej
-                CipherTextField.setText(Key.bytesToHex(cipherInByteArray));
+                buffer = divideFileIntoBlocks(cipherInByteArray);
+                for (byte b : cipherInByteArray) {
+                    stringBuilder.append((char) b);
+                }
             }
+            CipherTextField.setText(stringBuilder.toString());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -234,8 +219,7 @@ public class DESXController implements Initializable {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                byte[] bytes = Arrays.copyOfRange(textInByteArray,0,textInByteArray.length-2);
-                manager.write(bytes);
+                manager.write(textInByteArray);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -250,7 +234,7 @@ public class DESXController implements Initializable {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
                 FileManager manager = new FileManager(file);
-                manager.write(cipherInByteArray); // nie wiem czy getbytes czegos nie zwali (zastanowic sie czy moze buffer jakis do tego uzyc)
+                manager.write(cipherInByteArray);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -261,45 +245,46 @@ public class DESXController implements Initializable {
     @FXML
     public void Cipher(ActionEvent event) throws Exception {
         byte[][] textInBlocks;
-        if(!switchF.isSelected()){
+        if (!switchF.isSelected()) {
             textInBlocks = Text.divideFileIntoBlocks(textInByteArray);
-        }
-        else {
+        } else {
             textInBlocks = Text.divideStringIntoBlocks(PlainTextField.getText());
         }
 
-        buffer = new byte[textInBlocks.length-1][8];
+        buffer = new byte[textInBlocks.length - 1][8];
         DESX desx = new DESX();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < textInBlocks.length-1 ; i++) {
-            buffer[i] = desx.cipher(textInBlocks[i],key);
-            for (byte b: buffer[i]){
-                stringBuilder.append((char)b);
+        for (int i = 0; i < textInBlocks.length - 1; i++) {
+            buffer[i] = desx.cipher(textInBlocks[i], key);
+            for (byte b : buffer[i]) {
+                stringBuilder.append((char) b);
             }
         }
-        cipherInByteArray=Text.flatten(buffer);
-        CipherTextField.setText(Key.bytesToHex(cipherInByteArray));
+        cipherInByteArray = Text.flatten(buffer);
+        CipherTextField.setText(stringBuilder.toString());
     }
+
     @FXML
     public void Decipher(ActionEvent event) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         DESX desx = new DESX();
-            byte[][] temp = new byte[buffer.length][8];
-            for (int i = 0; i <buffer.length; i++) {
-                temp[i]=desx.decipher(buffer[i],key);
-                for (byte b: temp[i]){
-                    stringBuilder.append((char)b);
-                }
+        byte[][] temp = new byte[buffer.length][8];
+        for (int i = 0; i < buffer.length; i++) {
+            temp[i] = desx.decipher(buffer[i], key);
+        }
+        if (!switchF.isSelected()) {
+            for (int i = 0; i < 8; i++) {
+                temp[buffer.length - 1][i] = 0;
             }
-            textInByteArray = Text.flatten(temp);
-            PlainTextField.setText(Key.bytesToHex(textInByteArray));
+        }
+        textInByteArray = Text.flatten(temp);
+        for (byte b : textInByteArray) {
+            stringBuilder.append((char) b);
+        }
+        PlainTextField.setText(stringBuilder.toString());
+
     }
 
-
-    @FXML
-    public void test(ActionEvent event) {
-        System.out.println(buffer.length);
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

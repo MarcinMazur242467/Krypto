@@ -22,7 +22,7 @@ public class FileManager {
     }
 
 
-    public void write(byte[] text) throws IOException{
+    public void write(byte[] text) throws IOException {
         File file = new File(fileName.getPath());
         file.createNewFile();
         try (FileOutputStream output = new FileOutputStream(file)) {

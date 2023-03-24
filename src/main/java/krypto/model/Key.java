@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
 
-import static krypto.model.DESX.test;
 
 public class Key implements Serializable {
     private final List<byte[]> keyList = new ArrayList<>();
@@ -81,20 +80,24 @@ public class Key implements Serializable {
         return output;
     }
 
-    public byte[] bitRotateLeftByOne(byte[] table) {
-        BigInteger shitfR = new BigInteger(table);
-        BigInteger shitfL = new BigInteger(table);
-        shitfR = shitfR.shiftRight(27);
-        shitfL = shitfL.shiftLeft(1);
-        return shitfR.or(shitfL).toByteArray();
+    public byte[] bitRotateLeftByOne(byte[] arr) {
+        int carry = (arr[0] & 0x80) != 0 ? 1 : 0;
+        for (int i = 0; i < arr.length; i++) {
+            int nextCarry = (arr[i] & 0x80) != 0 ? 1 : 0;
+            arr[i] = (byte) ((arr[i] << 1) | carry);
+            carry = nextCarry;
+        }
+        return arr;
     }
 
-    public byte[] bitRotateLeftByTwo(byte[] table) {
-        BigInteger shitfR = new BigInteger(table);
-        BigInteger shitfL = new BigInteger(table);
-        shitfR = shitfR.shiftRight(26);
-        shitfL = shitfL.shiftLeft(2);
-        return shitfR.or(shitfL).toByteArray();
+    public byte[] bitRotateLeftByTwo(byte[] arr) {
+        int carry = (arr[0] & 0xC0) != 0 ? 1 : 0;
+        for (int i = 0; i < arr.length; i++) {
+            int nextCarry = (arr[i] & 0xC0) != 0 ? 1 : 0;
+            arr[i] = (byte) ((arr[i] << 2) | carry);
+            carry = nextCarry;
+        }
+        return arr;
     }
 
     public void generatePermutedKeys(byte[] key) {
@@ -110,13 +113,10 @@ public class Key implements Serializable {
                 rightKey = bitRotateLeftByTwo(rightKey);
                 leftKey = bitRotateLeftByTwo(leftKey);
             }
-            test(leftKey);
-            test(rightKey);
             BigInteger bigIntegerLeft = new BigInteger(1, rightKey);
             BigInteger bigIntegerRight = new BigInteger(1, leftKey);
             BigInteger bigInteger = bigIntegerRight.shiftLeft(28).or(bigIntegerLeft);
             permutedKey = bigInteger.toByteArray();
-            test(permutedKey);
             permutedKey = permuteFunction(permutedKey, PC2Pattern);
 
             permuttedKeyList.add(permutedKey);

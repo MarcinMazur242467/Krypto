@@ -20,7 +20,7 @@ public class FileObjManager {
         }
     }
 
-    public <T> void write(T t){
+    public <T> void write(T t) {
         try (FileOutputStream fileOut = new FileOutputStream(fileName);
              ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
             objectOut.writeObject(t);
@@ -28,8 +28,6 @@ public class FileObjManager {
             throw new RuntimeException(e);
         }
     }
-
-
 
 
 }

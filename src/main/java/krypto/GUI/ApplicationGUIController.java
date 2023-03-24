@@ -15,15 +15,16 @@ public class ApplicationGUIController {
     public void changeSceneToPlecak(ActionEvent event) throws IOException {
         Parent DESXViewParent = FXMLLoader.load(getClass().getResource("Plecakowy.fxml"));
         Scene DESXViewScene = new Scene(DESXViewParent);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(DESXViewScene);
         window.show();
     }
+
     @FXML
     public void changeSceneToDESX(ActionEvent event) throws IOException {
         Parent DESXViewParent = FXMLLoader.load(getClass().getResource("DESX.fxml"));
         Scene DESXViewScene = new Scene(DESXViewParent);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(DESXViewScene);
         window.show();
     }

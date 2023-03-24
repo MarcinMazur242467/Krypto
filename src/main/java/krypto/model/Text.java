@@ -8,7 +8,7 @@ public class Text {
         int counter = 0;
         byte[] bytes = text.getBytes();
         int blockCount = (int) Math.ceil((double) bytes.length / 8);
-        byte[][] blocks = new byte[blockCount+1][8];
+        byte[][] blocks = new byte[blockCount + 1][8];
         int index = 0;
         for (int i = 0; i < blockCount; i++) {
             for (int j = 0; j < 8; j++) {
@@ -30,10 +30,11 @@ public class Text {
         blocks[blockCount] = ByteBuffer.allocate(4).putInt(counter).array();
         return blocks;
     }
-    public static byte[][] divideFileIntoBlocks(byte[] tab){
+
+    public static byte[][] divideFileIntoBlocks(byte[] tab) {
         int counter = 0;
         int blockCount = (int) Math.ceil((double) tab.length / 8);
-        byte[][] blocks = new byte[blockCount+1][8];
+        byte[][] blocks = new byte[blockCount + 1][8];
         int index = 0;
         for (int i = 0; i < blockCount; i++) {
             for (int j = 0; j < 8; j++) {
