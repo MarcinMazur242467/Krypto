@@ -1,7 +1,6 @@
 package krypto.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -39,12 +38,14 @@ public class Key implements Serializable {
         return keyList.get(i);
     }
 
+
     public static byte[] getPermuttedKey(int i) {
         return Arrays.copyOfRange(permuttedKeyList.get(i), 0, 6);
     }
 
     public void resetKey() {
         keyList.clear();
+        permuttedKeyList.clear();
     }
 
     public static String bytesToHex(byte[] bytes) {
@@ -80,46 +81,72 @@ public class Key implements Serializable {
         return output;
     }
 
-    public byte[] bitRotateLeftByOne(byte[] arr) {
-        int carry = (arr[0] & 0x80) != 0 ? 1 : 0;
-        for (int i = 0; i < arr.length; i++) {
-            int nextCarry = (arr[i] & 0x80) != 0 ? 1 : 0;
-            arr[i] = (byte) ((arr[i] << 1) | carry);
-            carry = nextCarry;
-        }
+    private byte[] rotateLeft28L(byte[] arr) {
+        byte temp = (byte) ((arr[0] & 0x80) >> 3);
+        shiftLeft(arr, 1);
+        arr[3] = (byte) (arr[3] | temp);
         return arr;
     }
 
-    public byte[] bitRotateLeftByTwo(byte[] arr) {
-        int carry = (arr[0] & 0xC0) != 0 ? 1 : 0;
-        for (int i = 0; i < arr.length; i++) {
-            int nextCarry = (arr[i] & 0xC0) != 0 ? 1 : 0;
-            arr[i] = (byte) ((arr[i] << 2) | carry);
-            carry = nextCarry;
-        }
+    private byte[] rotateLeft28R(byte[] arr) {
+        byte temp = (byte) ((arr[0] & 0x8) >> 3);
+        shiftLeft(arr, 1);
+        arr[3] = (byte) (arr[3] | temp);
         return arr;
+    }
+
+    public static byte[] shiftLeft(byte[] byteArray, int shiftBitCount) {
+        final int shiftMod = shiftBitCount % 8;
+        final byte carryMask = (byte) ((1 << shiftMod) - 1);
+        final int offsetBytes = (shiftBitCount / 8);
+
+        int sourceIndex;
+        for (int i = 0; i < byteArray.length; i++) {
+            sourceIndex = i + offsetBytes;
+            if (sourceIndex >= byteArray.length) {
+                byteArray[i] = 0;
+            } else {
+                byte src = byteArray[sourceIndex];
+                byte dst = (byte) (src << shiftMod);
+                if (sourceIndex + 1 < byteArray.length) {
+                    dst |= byteArray[sourceIndex + 1] >>> (8 - shiftMod) & carryMask;
+                }
+                byteArray[i] = dst;
+            }
+        }
+        return byteArray;
     }
 
     public void generatePermutedKeys(byte[] key) {
         byte[] permutedKey = permuteFunction(key, PC1Pattern);
-        BigInteger bigNum = new BigInteger(1, permutedKey);
-        byte[] rightKey = bigNum.shiftRight(28).and(new BigInteger("FFFFFFF", 16)).toByteArray();
-        byte[] leftKey = bigNum.and(new BigInteger("FFFFFFF", 16)).toByteArray();
+        byte[] left = new byte[4];
+        byte[] right = new byte[4];
+        System.arraycopy(permutedKey, 0, left, 0, 4);
+        System.arraycopy(permutedKey, 3, right, 0, 4);
+        left[3] = (byte) (permutedKey[3] & 0xf0);
+        right[0] = (byte) (permutedKey[3] & 0x0f);
         for (int i = 0; i < 16; i++) {
             if (i == 0 || i == 1 || i == 8 || i == 15) {
-                rightKey = bitRotateLeftByOne(rightKey);
-                leftKey = bitRotateLeftByOne(leftKey);
+                rotateLeft28L(left);
+                rotateLeft28R(right);
             } else {
-                rightKey = bitRotateLeftByTwo(rightKey);
-                leftKey = bitRotateLeftByTwo(leftKey);
+                rotateLeft28L(left);
+                rotateLeft28L(left);
+                rotateLeft28R(right);
+                rotateLeft28R(right);
             }
-            BigInteger bigIntegerLeft = new BigInteger(1, rightKey);
-            BigInteger bigIntegerRight = new BigInteger(1, leftKey);
-            BigInteger bigInteger = bigIntegerRight.shiftLeft(28).or(bigIntegerLeft);
-            permutedKey = bigInteger.toByteArray();
-            permutedKey = permuteFunction(permutedKey, PC2Pattern);
-
-            permuttedKeyList.add(permutedKey);
+            byte[] result = new byte[7];
+            result[0] = left[0];
+            result[1] = left[1];
+            result[2] = left[2];
+            result[3] = (byte) (left[3] | right[0]);
+            result[4] = right[1];
+            result[5] = right[2];
+            result[6] = right[3];
+            result = permuteFunction(result, PC2Pattern);
+            permuttedKeyList.add(result);
         }
     }
+
+
 }

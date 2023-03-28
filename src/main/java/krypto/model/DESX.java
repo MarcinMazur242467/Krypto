@@ -239,7 +239,6 @@ public class DESX {
         System.arraycopy(block, 0, leftBlock, 0, 4);
         System.arraycopy(block, 4, rightBlock, 0, 4);
 
-        keys.generatePermutedKeys(keys.getKey(1));
         byte[] result = round(leftBlock, rightBlock, 0, false);
 
         result = permuteFunction(result, finalPermutationPattern);
@@ -262,7 +261,6 @@ public class DESX {
         System.arraycopy(block, 0, leftBlock, 0, 4);
         System.arraycopy(block, 4, rightBlock, 0, 4);
 
-        keys.generatePermutedKeys(keys.getKey(1));
 
 
         byte[] result = round(leftBlock, rightBlock, 0, true);

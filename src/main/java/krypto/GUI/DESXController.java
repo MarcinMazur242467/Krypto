@@ -98,6 +98,7 @@ public class DESXController implements Initializable {
         } else {
             allert(Alert.AlertType.ERROR, "Błędny klucz", "Klucz jest za długi albo nie jest w systemie 16");
         }
+        key.generatePermutedKeys(key.getKey(1));
     }
 
     private void hexToByte(TextField field) {
