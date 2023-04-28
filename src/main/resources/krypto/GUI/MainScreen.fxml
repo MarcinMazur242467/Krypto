@@ -12,7 +12,7 @@
     <children>
         <Button fx:id="DESXButton" layoutX="59.0" layoutY="455.0" mnemonicParsing="false" onAction="#changeSceneToDESX"
                 prefHeight="84.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="DESX"/>
-        <Button fx:id="PlecakowyButton" disable="true" layoutX="208.0" layoutY="455.0" mnemonicParsing="false"
+        <Button fx:id="PlecakowyButton" layoutX="208.0" layoutY="455.0" mnemonicParsing="false"
                 onAction="#changeSceneToPlecak" prefHeight="84.0" prefWidth="119.0" style="-fx-font-weight: bold;"
                 text="Plecakowy"/>
         <Label layoutX="79.0" layoutY="386.0" prefHeight="69.0" prefWidth="219.0" text="Wybór algorytmu:">

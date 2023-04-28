@@ -57,7 +57,7 @@
                 <Label layoutX="362.0" layoutY="228.0" text="Plik"/>
                 <Label layoutX="436.0" layoutY="228.0" text="Tekst"/>
                 <Label layoutX="41.0" layoutY="320.0" text="Zapisz plik zawierający tekst jawny"/>
-                <Button disable="true" layoutX="174.0" layoutY="365.0" mnemonicParsing="false"
+                <Button layoutX="174.0" layoutY="365.0" mnemonicParsing="false"
                         onAction="#changeSceneToPlecakowy" style="-fx-font-weight: bold;" text="Plecakowy"/>
                 <Button layoutX="43.0" layoutY="365.0" mnemonicParsing="false" onAction="#changeSceneToMain"
                         style="-fx-font-weight: bold;" text="Strona Startowa"/>
