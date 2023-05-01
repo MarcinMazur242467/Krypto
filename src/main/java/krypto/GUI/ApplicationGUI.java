@@ -6,7 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
 import java.util.Objects;
+
 public class ApplicationGUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {

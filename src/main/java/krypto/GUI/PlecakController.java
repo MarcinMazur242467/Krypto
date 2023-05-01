@@ -20,9 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static krypto.model.Key.bytesToHex;
 import static krypto.model.Text.divideFileIntoBlocks;
@@ -54,6 +52,7 @@ public class PlecakController implements Initializable {
     private byte[][] buffer;
     private byte[] textInByteArray;
     private byte[] cipherInByteArray;
+    private Knapsack knapsack = new Knapsack();
 
     @FXML
     public void changeSceneToMain(ActionEvent event) throws IOException {
@@ -72,10 +71,42 @@ public class PlecakController implements Initializable {
         window.setScene(DESXViewScene);
         window.show();
     }
+    private String intToHex(int value){
+        StringBuilder builder = new StringBuilder();
+        String hexDigits = "0123456789ABCDEF";
+
+        // Initialize an empty string to hold the result
+        String hexadecimal = "";
+
+        // Convert the decimal number to hexadecimal
+        while (value > 0) {
+            int remainder = value % 16;
+            hexadecimal = hexDigits.charAt(remainder) + hexadecimal;
+            value = value / 16;
+        }
+        return hexadecimal;
+    }
 
     @FXML
     public void generateKeys(ActionEvent event) {
-
+        knapsack.generatePrivateKey();
+        knapsack.printKnapsack();
+        StringBuilder builderPrivateKey = new StringBuilder();
+        StringBuilder builderPublicKey = new StringBuilder();
+        for (int i =0;i<8;i++) {
+            String hexPrivateKey = intToHex(knapsack.getPrivateKey().get(i).intValue());
+            String hexPublicKey = intToHex(knapsack.getPublicKey().get(i).intValue());
+            if(i==7){
+                builderPrivateKey.append(hexPrivateKey);
+                builderPublicKey.append(hexPublicKey);
+            }else{
+                builderPrivateKey.append(hexPrivateKey).append(",");
+                builderPublicKey.append(hexPublicKey).append(",");
+            }
+        }
+        privateKey.setText(builderPrivateKey.toString());
+        publicKey.setText(builderPublicKey.toString());
+        publicKey.setDisable(true);
     }
 
     public void allert(Alert.AlertType type, String title, String content) {
@@ -87,7 +118,29 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void loadKey(ActionEvent event) {
-
+        List<BigInteger> privateKey = new ArrayList<>();
+        String hexString =this.privateKey.getText();
+        if (!hexString.matches("[ABCDEF0123456789,]*")){
+            allert(Alert.AlertType.WARNING, "Błędny klucz", "Klucz musi być podany w postaci hexadecymalnej!");
+            return;
+        }
+        String[] stringValues = hexString.split(",");
+        if (stringValues.length != 8){
+            allert(Alert.AlertType.WARNING, "Błędny klucz", "Podany klucz musi składać sie z 8 części!");
+            return;
+        }
+        BigInteger sum = BigInteger.valueOf(0);
+        for (String s: stringValues) {
+            BigInteger num = new BigInteger(s,16);
+            if(sum.intValue() > num.intValue()){
+                allert(Alert.AlertType.WARNING, "Błędny klucz", "Podany klucz nie jest superrosnący!");
+                return;
+            }
+            sum=sum.add(num);
+            privateKey.add(num);
+        }
+        knapsack.loadPrivateKey(privateKey);
+        knapsack.printKnapsack();
     }
 
     private void hexToByte(TextField field) {
@@ -106,10 +159,52 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void loadKeyFromFile(ActionEvent event) {
+        loadKey(event);
+        FileChooser chooser = new FileChooser();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        try {
+            File file = chooser.showOpenDialog(window);
+
+            if (file != null) {
+                FileObjManager manager = new FileObjManager(file);
+                this.knapsack = manager.read();
+                StringBuilder builderPrivateKey = new StringBuilder();
+                StringBuilder builderPublicKey = new StringBuilder();
+                for (int i =0;i<8;i++) {
+                    String hexPrivateKey = intToHex(knapsack.getPrivateKey().get(i).intValue());
+                    String hexPublicKey = intToHex(knapsack.getPublicKey().get(i).intValue());
+                    if(i==7){
+                        builderPrivateKey.append(hexPrivateKey);
+                        builderPublicKey.append(hexPublicKey);
+                    }else{
+                        builderPrivateKey.append(hexPrivateKey).append(",");
+                        builderPublicKey.append(hexPublicKey).append(",");
+                    }
+                }
+                privateKey.setText(builderPrivateKey.toString());
+                publicKey.setText(builderPublicKey.toString());
+                publicKey.setDisable(true);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @FXML
     public void saveKeysToFile(ActionEvent event) {
+        loadKey(event);
+        FileChooser chooser = new FileChooser();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        try {
+            File file = chooser.showSaveDialog(window);
+
+            if (file != null) {
+                FileObjManager manager = new FileObjManager(file);
+                manager.write(knapsack);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @FXML
