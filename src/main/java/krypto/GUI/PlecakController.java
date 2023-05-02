@@ -71,7 +71,7 @@ public class PlecakController implements Initializable {
         window.setScene(DESXViewScene);
         window.show();
     }
-    private String intToHex(int value){
+    private String intToHex(int value) {
         StringBuilder builder = new StringBuilder();
         String hexDigits = "0123456789ABCDEF";
 
@@ -86,11 +86,7 @@ public class PlecakController implements Initializable {
         }
         return hexadecimal;
     }
-
-    @FXML
-    public void generateKeys(ActionEvent event) {
-        knapsack.generatePrivateKey();
-        knapsack.printKnapsack();
+    private void insertData(){
         StringBuilder builderPrivateKey = new StringBuilder();
         StringBuilder builderPublicKey = new StringBuilder();
         for (int i =0;i<8;i++) {
@@ -106,7 +102,12 @@ public class PlecakController implements Initializable {
         }
         privateKey.setText(builderPrivateKey.toString());
         publicKey.setText(builderPublicKey.toString());
-        publicKey.setDisable(true);
+    }
+    @FXML
+    public void generateKeys(ActionEvent event) {
+        knapsack.generatePrivateKey();
+        knapsack.printKnapsack();
+        insertData();
     }
 
     public void allert(Alert.AlertType type, String title, String content) {
@@ -130,9 +131,10 @@ public class PlecakController implements Initializable {
             return;
         }
         BigInteger sum = BigInteger.valueOf(0);
-        for (String s: stringValues) {
-            BigInteger num = new BigInteger(s,16);
-            if(sum.intValue() > num.intValue()){
+        for (int i =0;i<8;i++) {
+            BigInteger num = new BigInteger(stringValues[i],16);
+            int compare = sum.compareTo(num);
+            if(compare >= 0){
                 allert(Alert.AlertType.WARNING, "Błędny klucz", "Podany klucz nie jest superrosnący!");
                 return;
             }
@@ -140,6 +142,7 @@ public class PlecakController implements Initializable {
             privateKey.add(num);
         }
         knapsack.loadPrivateKey(privateKey);
+        insertData();
         knapsack.printKnapsack();
     }
 
@@ -159,7 +162,6 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void loadKeyFromFile(ActionEvent event) {
-        loadKey(event);
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -168,22 +170,7 @@ public class PlecakController implements Initializable {
             if (file != null) {
                 FileObjManager manager = new FileObjManager(file);
                 this.knapsack = manager.read();
-                StringBuilder builderPrivateKey = new StringBuilder();
-                StringBuilder builderPublicKey = new StringBuilder();
-                for (int i =0;i<8;i++) {
-                    String hexPrivateKey = intToHex(knapsack.getPrivateKey().get(i).intValue());
-                    String hexPublicKey = intToHex(knapsack.getPublicKey().get(i).intValue());
-                    if(i==7){
-                        builderPrivateKey.append(hexPrivateKey);
-                        builderPublicKey.append(hexPublicKey);
-                    }else{
-                        builderPrivateKey.append(hexPrivateKey).append(",");
-                        builderPublicKey.append(hexPublicKey).append(",");
-                    }
-                }
-                privateKey.setText(builderPrivateKey.toString());
-                publicKey.setText(builderPublicKey.toString());
-                publicKey.setDisable(true);
+                insertData();
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -192,7 +179,6 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void saveKeysToFile(ActionEvent event) {
-        loadKey(event);
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
