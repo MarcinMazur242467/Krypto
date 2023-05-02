@@ -54,6 +54,8 @@ public class PlecakController implements Initializable {
     private byte[] cipherInByteArray;
     private Knapsack knapsack = new Knapsack();
 
+    private List<BigInteger> bigIntBuff = new ArrayList<>();
+
     @FXML
     public void changeSceneToMain(ActionEvent event) throws IOException {
         Parent DESXViewParent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainScreen.fxml")));
@@ -270,7 +272,17 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void Cipher(ActionEvent event) throws Exception {
-
+        String text = PlainTextField.getText();
+        StringBuilder builder = new StringBuilder();
+        BigInteger integer;
+        for (int i =0;i<text.length();i++){
+            char c;
+            c = text.charAt(i);
+            integer = knapsack.encrypt(c);
+            bigIntBuff.add(integer);
+            builder.append(intToHex(integer.intValue())).append(",");
+        }
+        CipherTextField.setText(builder.toString());
     }
 
     @FXML

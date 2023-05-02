@@ -103,6 +103,17 @@ public class Knapsack implements Serializable {
         }
 
     }
+    public BigInteger encrypt(char data){
+        BigInteger sum = BigInteger.valueOf(0);
+        for (int i = 7; i >= 0; i--) {
+            int bitValue = (data >> i) & 1;
+            if(bitValue==1){
+                sum=sum.add(publicKey.get(7-i));
+            }
+        }
+        return sum;
+    }
+
     private void generatePublicKey(){
         for (int i =0;i<8;i++){
             publicKey.add(privateKey.get(i).multiply(N).mod(M));
