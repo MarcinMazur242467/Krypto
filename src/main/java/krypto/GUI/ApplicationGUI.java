@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import krypto.model.Knapsack;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 public class ApplicationGUI extends Application {
@@ -23,14 +24,7 @@ public class ApplicationGUI extends Application {
     }
 
     public static void main(String[] args) {
-
-        Knapsack knapsack = new Knapsack();
-        knapsack.generatePrivateKey();
-        knapsack.printKnapsack();
-        System.out.println("A="+knapsack.encrypt((char)65));
-        System.out.println("A="+knapsack.decrypt(knapsack.encrypt((char)65)));
-
-//        launch();
+        launch();
     }
 }
 

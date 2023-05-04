@@ -290,6 +290,11 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void Decipher(ActionEvent event) throws Exception {
+        StringBuilder builder = new StringBuilder();
+        for (BigInteger bigInteger : bigIntBuff) {
+            builder.append(knapsack.decrypt(bigInteger));
+        }
+        PlainTextField.setText(builder.toString());
     }
 
 

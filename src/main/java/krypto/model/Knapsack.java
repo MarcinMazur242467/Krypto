@@ -123,19 +123,19 @@ public class Knapsack implements Serializable {
     private char reverseBits(char b) {
         char result = 0;
         for (int i = 0; i < 8; i++) {
-            result |= (b & 1);
             result <<= 1;
+            result |= (b & 1);
+            b >>= 1;
         }
         return result;
     }
 
     public char decrypt(BigInteger input) {
         char c = 0;
-        char temp=0;
         BigInteger invers = N.modInverse(M);
         input = input.multiply(invers).mod(M);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 7; i++) {
             int compare = privateKey.get(7-i).compareTo(input);
             if (compare <= 0) {
                 c = (char) ((c|1)<<1);
@@ -143,11 +143,8 @@ public class Knapsack implements Serializable {
             } else {
                  c = (char) (c << 1);
             }
-            printByteBits(c);
         }
-//        printByteBits(c);
-//        printByteBits(reverseBits(c));
-        return c;
+        return reverseBits(c);
     }
     public static void printByteBits(char b) {
         for (int i = 7; i >= 0; i--) {
