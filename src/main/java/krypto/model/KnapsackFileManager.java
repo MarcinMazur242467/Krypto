@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,20 @@ public class KnapsackFileManager {
         List<BigInteger> bigIntegerList = new ArrayList<>();
         ByteBuffer byteBuffer = ByteBuffer.wrap(byteArray);
         while (byteBuffer.hasRemaining()) {
-            bigIntegerList.add(BigInteger.valueOf(byteBuffer.getLong()));
+            try{
+                bigIntegerList.add(BigInteger.valueOf(byteBuffer.getLong()));
+            }
+            catch (BufferUnderflowException e){
+                byte[] remainingBytes = new byte[byteBuffer.remaining()];
+                byteBuffer.get(remainingBytes);
+                byte[] extendedBytes = new byte[8];
+                System.arraycopy(remainingBytes, 0, extendedBytes, 0, remainingBytes.length);
+                for (int i = remainingBytes.length; i < extendedBytes.length; i++) {
+                    extendedBytes[i] = 0;
+                }
+                BigInteger remainingValue = new BigInteger(extendedBytes);
+                bigIntegerList.add(remainingValue);
+            }
         }
 
         return bigIntegerList;

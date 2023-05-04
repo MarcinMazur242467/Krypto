@@ -50,8 +50,8 @@ public class PlecakController implements Initializable {
 
     private Key key = new Key();
     private byte[][] buffer;
-    private List<BigInteger> textInBigIntArray;
-    private List<BigInteger> cipherInBigIntArray;
+    private List<BigInteger> textInBigIntArray = new ArrayList<>();
+    private List<BigInteger> cipherInBigIntArray = new ArrayList<>();
     private Knapsack knapsack = new Knapsack();
 
     private List<BigInteger> bigIntBuff = new ArrayList<>();
@@ -296,6 +296,7 @@ public class PlecakController implements Initializable {
             builder.append(knapsack.decrypt(bigInteger));
             textInBigIntArray.add(bigInteger);
         }
+        bigIntBuff.clear();
         PlainTextField.setText(builder.toString());
     }
 
