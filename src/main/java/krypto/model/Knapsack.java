@@ -10,16 +10,17 @@ public class Knapsack implements Serializable {
 
 
     private List<BigInteger> privateKey = new ArrayList<>();
-    private final List<BigInteger> publicKey= new ArrayList<>();
+    private final List<BigInteger> publicKey = new ArrayList<>();
     private BigInteger M;
     private BigInteger N;
 
-    public void clearKnapsack(){
+    public void clearKnapsack() {
         privateKey.clear();
         publicKey.clear();
-        M=BigInteger.valueOf(0);
-        N=BigInteger.valueOf(0);
+        M = BigInteger.valueOf(0);
+        N = BigInteger.valueOf(0);
     }
+
     public List<BigInteger> getPrivateKey() {
         return privateKey;
     }
@@ -38,7 +39,7 @@ public class Knapsack implements Serializable {
 
     private Random random = new Random();
 
-    private String intToHex(int value){
+    private String intToHex(int value) {
         StringBuilder builder = new StringBuilder();
         String hexDigits = "0123456789ABCDEF";
 
@@ -53,69 +54,110 @@ public class Knapsack implements Serializable {
         }
         return hexadecimal;
     }
-    public void generatePrivateKey(){
+
+    public void generatePrivateKey() {
         clearKnapsack();
-        BigInteger first = new BigInteger(20,random);
+        // DLUGOSC KLUCZA 2 ^ numberBits -1
+        BigInteger first = new BigInteger(15, random);
         privateKey.add(first);
-        while(privateKey.size() != 8){
+        while (privateKey.size() != 8) {
             int n = random.nextInt(first.intValue());
             BigInteger next = first.add(new BigInteger(Integer.toString(n))).add(BigInteger.valueOf(1));
             privateKey.add(next);
-            first=first.add(next);
+            first = first.add(next);
         }
         generateMnN();
         generatePublicKey();
     }
-    public void printKnapsack(){
+
+    public void printKnapsack() {
         System.out.println();
-        System.out.println("Private="+getPrivateKey());
-        System.out.println("Public="+getPublicKey());
-        System.out.println("M="+getM()+" In hexa: " +intToHex(getM().intValue()));
-        System.out.println("N="+getN()+" In hexa: " +intToHex(getN().intValue()));
+        System.out.println("Private=" + getPrivateKey());
+        System.out.println("Public=" + getPublicKey());
+        System.out.println("M=" + getM() + " In hexa: " + intToHex(getM().intValue()));
+        System.out.println("N=" + getN() + " In hexa: " + intToHex(getN().intValue()));
         System.out.println();
     }
-    public void loadPrivateKey(List<BigInteger> PrivateKey){
+
+    public void loadPrivateKey(List<BigInteger> PrivateKey) {
         clearKnapsack();
         this.privateKey = PrivateKey;
         generateMnN();
         generatePublicKey();
     }
-    private void generateMnN(){
+
+    private void generateMnN() {
         BigInteger sum = new BigInteger("0");
-        for (BigInteger i: privateKey) {
-            sum=sum.add(i);
+        for (BigInteger i : privateKey) {
+            sum = sum.add(i);
         }
-        sum=sum.add(sum).add(BigInteger.valueOf(1));
-        M=sum;
+        sum = sum.add(sum).add(BigInteger.valueOf(1));
+        M = sum;
 
 
         //TO TRZEBA BEDZIE NAPRAWIC TAK NIE MOZE BYC
-        int potentialN = sum.intValue()-10000;
+        int potentialN = sum.intValue() - 10000;
         BigInteger potentialNBigInt = new BigInteger(Integer.toString(potentialN));
 
-        while(true){
+        while (true) {
             int gcd = M.gcd(potentialNBigInt).intValue();
-            if(gcd == 1 ){
-                N=potentialNBigInt;
+            if (gcd == 1) {
+                N = potentialNBigInt;
                 break;
             }
-            potentialNBigInt=potentialNBigInt.subtract(BigInteger.valueOf(-1));
+            potentialNBigInt = potentialNBigInt.subtract(BigInteger.valueOf(-1));
         }
 
     }
-    public BigInteger encrypt(char data){
+
+    public BigInteger encrypt(char data) {
         BigInteger sum = BigInteger.valueOf(0);
         for (int i = 7; i >= 0; i--) {
             int bitValue = (data >> i) & 1;
-            if(bitValue==1){
-                sum=sum.add(publicKey.get(7-i));
+            if (bitValue == 1) {
+                sum = sum.add(publicKey.get(7 - i));
             }
         }
         return sum;
     }
+    private char reverseBits(char b) {
+        char result = 0;
+        for (int i = 0; i < 8; i++) {
+            result |= (b & 1);
+            result <<= 1;
+        }
+        return result;
+    }
 
-    private void generatePublicKey(){
-        for (int i =0;i<8;i++){
+    public char decrypt(BigInteger input) {
+        char c = 0;
+        char temp=0;
+        BigInteger invers = N.modInverse(M);
+        input = input.multiply(invers).mod(M);
+
+        for (int i = 0; i < 8; i++) {
+            int compare = privateKey.get(7-i).compareTo(input);
+            if (compare <= 0) {
+                c = (char) ((c|1)<<1);
+                input = input.subtract(privateKey.get(7-i));
+            } else {
+                 c = (char) (c << 1);
+            }
+            printByteBits(c);
+        }
+//        printByteBits(c);
+//        printByteBits(reverseBits(c));
+        return c;
+    }
+    public static void printByteBits(char b) {
+        for (int i = 7; i >= 0; i--) {
+            System.out.print((b >> i) & 1);
+        }
+        System.out.println();
+    }
+
+    private void generatePublicKey() {
+        for (int i = 0; i < 8; i++) {
             publicKey.add(privateKey.get(i).multiply(N).mod(M));
         }
     }

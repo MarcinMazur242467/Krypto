@@ -23,11 +23,14 @@ public class ApplicationGUI extends Application {
     }
 
     public static void main(String[] args) {
-//        Knapsack knapsack = new Knapsack();
-//        knapsack.generatePrivateKey();
-//        knapsack.printKnapsack();
-//        System.out.println("A="+knapsack.encrypt((char)65));
-        launch();
+
+        Knapsack knapsack = new Knapsack();
+        knapsack.generatePrivateKey();
+        knapsack.printKnapsack();
+        System.out.println("A="+knapsack.encrypt((char)65));
+        System.out.println("A="+knapsack.decrypt(knapsack.encrypt((char)65)));
+
+//        launch();
     }
 }
 

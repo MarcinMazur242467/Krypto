@@ -275,12 +275,15 @@ public class PlecakController implements Initializable {
         String text = PlainTextField.getText();
         StringBuilder builder = new StringBuilder();
         BigInteger integer;
+        char c;
         for (int i =0;i<text.length();i++){
-            char c;
             c = text.charAt(i);
             integer = knapsack.encrypt(c);
             bigIntBuff.add(integer);
-            builder.append(intToHex(integer.intValue())).append(",");
+            if(i==text.length()-1) {
+                builder.append(intToHex(integer.intValue()));
+            }
+            else builder.append(intToHex(integer.intValue())).append(",");
         }
         CipherTextField.setText(builder.toString());
     }
