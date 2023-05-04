@@ -50,8 +50,8 @@ public class PlecakController implements Initializable {
 
     private Key key = new Key();
     private byte[][] buffer;
-    private byte[] textInByteArray;
-    private byte[] cipherInByteArray;
+    private List<BigInteger> textInBigIntArray;
+    private List<BigInteger> cipherInBigIntArray;
     private Knapsack knapsack = new Knapsack();
 
     private List<BigInteger> bigIntBuff = new ArrayList<>();
@@ -204,10 +204,10 @@ public class PlecakController implements Initializable {
             File file = chooser.showOpenDialog(window);
 
             if (file != null) {
-                FileManager manager = new FileManager(file);
-                textInByteArray = manager.read();
-                for (byte b : textInByteArray) {
-                    stringBuilder.append((char) b);
+                KnapsackFileManager manager = new KnapsackFileManager(file);
+                textInBigIntArray = manager.readBigIntegersFromFile();
+                for (BigInteger b : textInBigIntArray) {
+                    stringBuilder.append(b);
                 }
             }
             PlainTextField.setText(stringBuilder.toString());
@@ -225,11 +225,11 @@ public class PlecakController implements Initializable {
             File file = chooser.showOpenDialog(window);
 
             if (file != null) {
-                FileManager manager = new FileManager(file);
-                cipherInByteArray = manager.read();
-                buffer = divideFileIntoBlocks(cipherInByteArray);
-                for (byte b : cipherInByteArray) {
-                    stringBuilder.append((char) b);
+                KnapsackFileManager manager = new KnapsackFileManager(file);
+                cipherInBigIntArray = manager.readBigIntegersFromFile();
+                bigIntBuff = cipherInBigIntArray;
+                for (BigInteger b : cipherInBigIntArray) {
+                    stringBuilder.append(b);
                 }
             }
             CipherTextField.setText(stringBuilder.toString());
@@ -246,8 +246,8 @@ public class PlecakController implements Initializable {
         try {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
-                FileManager manager = new FileManager(file);
-                manager.write(textInByteArray);
+                KnapsackFileManager manager = new KnapsackFileManager(file);
+                manager.saveBigIntegersToFile(textInBigIntArray);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -261,8 +261,8 @@ public class PlecakController implements Initializable {
         try {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
-                FileManager manager = new FileManager(file);
-                manager.write(cipherInByteArray);
+                KnapsackFileManager manager = new KnapsackFileManager(file);
+                manager.saveBigIntegersToFile(cipherInBigIntArray);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -285,6 +285,7 @@ public class PlecakController implements Initializable {
             }
             else builder.append(intToHex(integer.intValue())).append(",");
         }
+        cipherInBigIntArray = bigIntBuff;
         CipherTextField.setText(builder.toString());
     }
 
@@ -293,6 +294,7 @@ public class PlecakController implements Initializable {
         StringBuilder builder = new StringBuilder();
         for (BigInteger bigInteger : bigIntBuff) {
             builder.append(knapsack.decrypt(bigInteger));
+            textInBigIntArray.add(bigInteger);
         }
         PlainTextField.setText(builder.toString());
     }
