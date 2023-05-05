@@ -113,7 +113,6 @@ public class Knapsack implements Serializable {
     public BigInteger encrypt(byte data) {
         BigInteger sum = BigInteger.valueOf(0);
         for (int i = 7; i >= 0; i--) {
-            System.out.println(i);
             int bitValue = (data >> i) & 1;
             if (bitValue == 1) {
                 sum = sum.add(publicKey.get(7 - i));
@@ -137,34 +136,16 @@ public class Knapsack implements Serializable {
 
         BigInteger invers = N.modInverse(M);
         input = input.multiply(invers).mod(M);
-
-//        for (int i = 7; i >=0; i--) {
-//                int compare = input.compareTo(privateKey.get(i));
-//                if(compare<0){
-//                    System.out.println(0);
-//                    continue;
-//                }
-//                else{
-//                    c = (byte) ((c | 1) << 1);
-//                    System.out.println(1);
-//                    input = input.subtract(privateKey.get(i));
-//                }
-////                printByteBits((char)c);
-//        }
-////        printByteBits((char)reverseBits(c));
-
-        byte pom = 0;
-        byte pomocnicza[] = new byte[8];
-        for (int i = 7; i >= 0; i--)//pętla po poszczególnych bitach każdego bajta wiadomości
-        {
+        byte temp = 0;
+        byte[] tempArr = new byte[8];
+        for (int i = 7; i >= 0; i--) {
             if (input.compareTo(privateKey.get(i)) >= 0) {
                 input = input.subtract(privateKey.get(i));
-                pomocnicza[i] = 1;
+                tempArr[i] = 1;
             }
         }
-        for (int j = 0; j < 8; j++) pom += Math.pow(2, j) * pomocnicza[j];
-        System.out.println(reverseBits(pom));
-        return reverseBits(pom);
+        for (int j = 0; j < 8; j++) temp += Math.pow(2, j) * tempArr[j];
+        return reverseBits(temp);
     }
 
     public static void printByteBits(char b) {

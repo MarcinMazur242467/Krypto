@@ -26,26 +26,18 @@ import java.util.*;
 public class PlecakController implements Initializable {
     @FXML
     private ToggleSwitch switchF;
-
     @FXML
     private TextArea CipherTextField;
-
     @FXML
     private TextField publicKey;
-
     @FXML
     private TextField privateKey;
-
-
     @FXML
     private Button LoadCipherFromFIleButton;
-
     @FXML
     private Button LoadTextFromFileButton;
-
     @FXML
     private TextArea PlainTextField;
-
     private List<BigInteger> textInBigIntArray = new ArrayList<>();
     private List<BigInteger> cipherInBigIntArray = new ArrayList<>();
     private Knapsack knapsack = new Knapsack();
@@ -72,10 +64,8 @@ public class PlecakController implements Initializable {
     private String intToHex(int value) {
         StringBuilder builder = new StringBuilder();
         String hexDigits = "0123456789ABCDEF";
-
         // Initialize an empty string to hold the result
         String hexadecimal = "";
-
         // Convert the decimal number to hexadecimal
         while (value > 0) {
             int remainder = value % 16;
@@ -106,7 +96,6 @@ public class PlecakController implements Initializable {
     @FXML
     public void generateKeys(ActionEvent event) {
         knapsack.generatePrivateKey();
-//        knapsack.printKnapsack();
         insertData();
     }
 
@@ -143,7 +132,6 @@ public class PlecakController implements Initializable {
         }
         knapsack.loadPrivateKey(privateKey);
         insertData();
-//        knapsack.printKnapsack();
     }
 
 
@@ -187,20 +175,15 @@ public class PlecakController implements Initializable {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
             File file = chooser.showOpenDialog(window);
-
             if (file != null) {
-                textInBigIntArray.clear();;
+                textInBigIntArray.clear();
                 FileManager manager = new FileManager(file);
                 byte[] temp = manager.read();
-                for (byte b: temp) {
+                for (byte b : temp) {
                     textInBigIntArray.add(BigInteger.valueOf(b));
-                    stringBuilder.append((char)b);
+                    stringBuilder.append((char) b);
                 }
-//                for (BigInteger b : textInBigIntArray) {
-//                    stringBuilder.append((char)b.toByteArray());
-//                }
             }
-            System.out.println("readFile - textInBigIntArr: " + textInBigIntArray);
             PlainTextField.setText(stringBuilder.toString());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -223,8 +206,6 @@ public class PlecakController implements Initializable {
                     stringBuilder.append(b);
                 }
             }
-            System.out.println("Odczytany szyfr - cipherInBigIntArr: " + cipherInBigIntArray);
-            System.out.println("Odczytany szyfr - bigIntBuff: " + bigIntBuff);
             CipherTextField.setText(stringBuilder.toString());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -233,7 +214,6 @@ public class PlecakController implements Initializable {
 
     @FXML
     public void saveText(ActionEvent event) {
-
         FileChooser chooser = new FileChooser();
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
@@ -275,7 +255,7 @@ public class PlecakController implements Initializable {
 
 
     @FXML
-    public void Cipher(ActionEvent event) throws Exception {
+    public void Cipher(ActionEvent event) {
         String text;
         if (switchF.isSelected()) {
             text = PlainTextField.getText();
@@ -283,16 +263,15 @@ public class PlecakController implements Initializable {
             StringBuilder stringBuilder = new StringBuilder();
             for (BigInteger bigInteger : textInBigIntArray) {
                 byte character = bigInteger.byteValue();
-                stringBuilder.append((char)character);
+                stringBuilder.append((char) character);
             }
             text = stringBuilder.toString();
         }
-        System.out.println("String text: " + text);
         StringBuilder builder = new StringBuilder();
         BigInteger integer;
         byte c;
         for (int i = 0; i < text.length(); i++) {
-            c = (byte)text.charAt(i);
+            c = (byte) text.charAt(i);
             integer = knapsack.encrypt(c);
             bigIntBuff.add(integer);
             if (i == text.length() - 1) {
@@ -300,24 +279,20 @@ public class PlecakController implements Initializable {
             } else builder.append(intToHex(integer.intValue())).append(",");
         }
         cipherInBigIntArray = bigIntBuff;
-        System.out.println("Zaszyfrowane - cipherInBigIntArr: " + cipherInBigIntArray);
-        System.out.println("Zaszyfrowane - bigIntBuff: " + bigIntBuff);
         CipherTextField.setText(builder.toString());
     }
 
     @FXML
-    public void Decipher(ActionEvent event) throws Exception {
+    public void Decipher(ActionEvent event) {
         textInBigIntArray.clear();
         StringBuilder builder = new StringBuilder();
         byte temp;
         for (BigInteger bigInteger : bigIntBuff) {
             temp = knapsack.decrypt(bigInteger);
-            builder.append((char)temp);
-//            System.out.println(BigInteger.valueOf(temp));
+            builder.append((char) temp);
             textInBigIntArray.add(BigInteger.valueOf(temp));
         }
         bigIntBuff.clear();
-//        System.out.println("Odszyfrowane - textInBigIntArr: " + textInBigIntArray);
         PlainTextField.setText(builder.toString());
     }
 
