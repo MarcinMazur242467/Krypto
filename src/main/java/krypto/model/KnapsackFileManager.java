@@ -1,14 +1,13 @@
 package krypto.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class KnapsackFileManager {
 
@@ -25,41 +24,26 @@ public class KnapsackFileManager {
         }
         return byteBuffer.array();
     }
-    public void saveBigIntegersToFile(List<BigInteger> bigIntegerList) throws IOException {
-        byte[] byteArray = convertBigIntegersToByteArray(bigIntegerList);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(new File(fileName.getPath()));
-        fileOutputStream.write(byteArray);
-        fileOutputStream.close();
+    public void saveBigIntegersToFile(List<BigInteger> bigIntegerList) throws IOException {
+        char[] charArray = new char[bigIntegerList.size()];
+        for (int i = 0; i < bigIntegerList.size(); i++) {
+            charArray[i] = (char) bigIntegerList.get(i).byteValue();
+        }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        writer.write(charArray);
+        writer.close();
     }
 
     public List<BigInteger> readBigIntegersFromFile() throws IOException {
-        File file = new File(fileName.getPath());
-        byte[] byteArray = new byte[(int) file.length()];
-
-        FileInputStream fileInputStream = new FileInputStream(file);
-        fileInputStream.read(byteArray);
-        fileInputStream.close();
-
         List<BigInteger> bigIntegerList = new ArrayList<>();
-        ByteBuffer byteBuffer = ByteBuffer.wrap(byteArray);
-        while (byteBuffer.hasRemaining()) {
-            try{
-                bigIntegerList.add(BigInteger.valueOf(byteBuffer.getLong()));
-            }
-            catch (BufferUnderflowException e){
-                byte[] remainingBytes = new byte[byteBuffer.remaining()];
-                byteBuffer.get(remainingBytes);
-                byte[] extendedBytes = new byte[8];
-                System.arraycopy(remainingBytes, 0, extendedBytes, 0, remainingBytes.length);
-                for (int i = remainingBytes.length; i < extendedBytes.length; i++) {
-                    extendedBytes[i] = 0;
-                }
-                BigInteger remainingValue = new BigInteger(extendedBytes);
-                bigIntegerList.add(remainingValue);
-            }
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        int ch;
+        while ((ch = reader.read()) != -1) {
+            bigIntegerList.add(BigInteger.valueOf(ch));
         }
-
+        reader.close();
         return bigIntegerList;
     }
 

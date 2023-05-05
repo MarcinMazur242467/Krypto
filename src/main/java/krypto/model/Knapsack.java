@@ -120,6 +120,7 @@ public class Knapsack implements Serializable {
         }
         return sum;
     }
+
     private char reverseBits(char b) {
         char result = 0;
         for (int i = 0; i < 8; i++) {
@@ -136,16 +137,17 @@ public class Knapsack implements Serializable {
         input = input.multiply(invers).mod(M);
 
         for (int i = 0; i < 7; i++) {
-            int compare = privateKey.get(7-i).compareTo(input);
+            int compare = privateKey.get(7 - i).compareTo(input);
             if (compare <= 0) {
-                c = (char) ((c|1)<<1);
-                input = input.subtract(privateKey.get(7-i));
+                c = (char) ((c | 1) << 1);
+                input = input.subtract(privateKey.get(7 - i));
             } else {
-                 c = (char) (c << 1);
+                c = (char) (c << 1);
             }
         }
         return reverseBits(c);
     }
+
     public static void printByteBits(char b) {
         for (int i = 7; i >= 0; i--) {
             System.out.print((b >> i) & 1);
