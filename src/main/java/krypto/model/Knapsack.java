@@ -134,21 +134,37 @@ public class Knapsack implements Serializable {
 
     public byte decrypt(BigInteger input) {
         byte c = 0;
+
         BigInteger invers = N.modInverse(M);
         input = input.multiply(invers).mod(M);
 
-        for (int i = 0; i < 7; i++) {
-            System.out.println(i);
-            int compare = privateKey.get(7 - i).compareTo(input);
-            if (compare <= 0) {
-                c = (byte) ((c | 1) << 1);
-                input = input.subtract(privateKey.get(7 - i));
-            } else {
-                c = (byte) (c << 1);
+//        for (int i = 7; i >=0; i--) {
+//                int compare = input.compareTo(privateKey.get(i));
+//                if(compare<0){
+//                    System.out.println(0);
+//                    continue;
+//                }
+//                else{
+//                    c = (byte) ((c | 1) << 1);
+//                    System.out.println(1);
+//                    input = input.subtract(privateKey.get(i));
+//                }
+////                printByteBits((char)c);
+//        }
+////        printByteBits((char)reverseBits(c));
+
+        byte pom = 0;
+        byte pomocnicza[] = new byte[8];
+        for (int i = 7; i >= 0; i--)//pętla po poszczególnych bitach każdego bajta wiadomości
+        {
+            if (input.compareTo(privateKey.get(i)) >= 0) {
+                input = input.subtract(privateKey.get(i));
+                pomocnicza[i] = 1;
             }
         }
-//        printByteBits((char)c);
-        return reverseBits(c);
+        for (int j = 0; j < 8; j++) pom += Math.pow(2, j) * pomocnicza[j];
+        System.out.println(reverseBits(pom));
+        return reverseBits(pom);
     }
 
     public static void printByteBits(char b) {
