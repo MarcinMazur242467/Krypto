@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.*;
 
 public class PlecakController implements Initializable {
@@ -193,10 +194,11 @@ public class PlecakController implements Initializable {
                 byte[] temp = manager.read();
                 for (byte b: temp) {
                     textInBigIntArray.add(BigInteger.valueOf(b));
+                    stringBuilder.append((char)b);
                 }
-                for (BigInteger b : textInBigIntArray) {
-                    stringBuilder.append(b);
-                }
+//                for (BigInteger b : textInBigIntArray) {
+//                    stringBuilder.append((char)b.toByteArray());
+//                }
             }
             System.out.println("readFile - textInBigIntArr: " + textInBigIntArray);
             PlainTextField.setText(stringBuilder.toString());
@@ -237,8 +239,19 @@ public class PlecakController implements Initializable {
         try {
             File file = chooser.showSaveDialog(window);
             if (file != null) {
-                KnapsackFileManager manager = new KnapsackFileManager(file);
-                manager.saveBigIntegersToFile(textInBigIntArray);
+                int size = 0;
+                for (BigInteger bigInt : textInBigIntArray) {
+                    size += bigInt.toByteArray().length;
+                }
+
+                ByteBuffer buffer = ByteBuffer.allocate(size);
+                for (BigInteger bigInt : textInBigIntArray) {
+                    buffer.put(bigInt.toByteArray());
+                }
+
+                byte[] arr = buffer.array();
+                FileManager manager = new FileManager(file);
+                manager.write(arr);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
