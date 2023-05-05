@@ -110,9 +110,10 @@ public class Knapsack implements Serializable {
 
     }
 
-    public BigInteger encrypt(char data) {
+    public BigInteger encrypt(byte data) {
         BigInteger sum = BigInteger.valueOf(0);
         for (int i = 7; i >= 0; i--) {
+            System.out.println(i);
             int bitValue = (data >> i) & 1;
             if (bitValue == 1) {
                 sum = sum.add(publicKey.get(7 - i));
@@ -121,8 +122,8 @@ public class Knapsack implements Serializable {
         return sum;
     }
 
-    private char reverseBits(char b) {
-        char result = 0;
+    private byte reverseBits(byte b) {
+        byte result = 0;
         for (int i = 0; i < 8; i++) {
             result <<= 1;
             result |= (b & 1);
@@ -131,20 +132,22 @@ public class Knapsack implements Serializable {
         return result;
     }
 
-    public char decrypt(BigInteger input) {
-        char c = 0;
+    public byte decrypt(BigInteger input) {
+        byte c = 0;
         BigInteger invers = N.modInverse(M);
         input = input.multiply(invers).mod(M);
 
         for (int i = 0; i < 7; i++) {
+            System.out.println(i);
             int compare = privateKey.get(7 - i).compareTo(input);
             if (compare <= 0) {
-                c = (char) ((c | 1) << 1);
+                c = (byte) ((c | 1) << 1);
                 input = input.subtract(privateKey.get(7 - i));
             } else {
-                c = (char) (c << 1);
+                c = (byte) (c << 1);
             }
         }
+//        printByteBits((char)c);
         return reverseBits(c);
     }
 

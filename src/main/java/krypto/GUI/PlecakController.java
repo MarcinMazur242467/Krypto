@@ -188,8 +188,12 @@ public class PlecakController implements Initializable {
             File file = chooser.showOpenDialog(window);
 
             if (file != null) {
-                KnapsackFileManager manager = new KnapsackFileManager(file);
-                textInBigIntArray = manager.readBigIntegersFromFile();
+                textInBigIntArray.clear();;
+                FileManager manager = new FileManager(file);
+                byte[] temp = manager.read();
+                for (byte b: temp) {
+                    textInBigIntArray.add(BigInteger.valueOf(b));
+                }
                 for (BigInteger b : textInBigIntArray) {
                     stringBuilder.append(b);
                 }
@@ -265,17 +269,17 @@ public class PlecakController implements Initializable {
         } else {
             StringBuilder stringBuilder = new StringBuilder();
             for (BigInteger bigInteger : textInBigIntArray) {
-                char character = (char) bigInteger.byteValue();
-                stringBuilder.append(character);
+                byte character = bigInteger.byteValue();
+                stringBuilder.append((char)character);
             }
             text = stringBuilder.toString();
         }
         System.out.println("String text: " + text);
         StringBuilder builder = new StringBuilder();
         BigInteger integer;
-        char c;
+        byte c;
         for (int i = 0; i < text.length(); i++) {
-            c = text.charAt(i);
+            c = (byte)text.charAt(i);
             integer = knapsack.encrypt(c);
             bigIntBuff.add(integer);
             if (i == text.length() - 1) {
@@ -292,14 +296,15 @@ public class PlecakController implements Initializable {
     public void Decipher(ActionEvent event) throws Exception {
         textInBigIntArray.clear();
         StringBuilder builder = new StringBuilder();
-        char temp;
+        byte temp;
         for (BigInteger bigInteger : bigIntBuff) {
             temp = knapsack.decrypt(bigInteger);
-            builder.append(temp);
+            builder.append((char)temp);
+//            System.out.println(BigInteger.valueOf(temp));
             textInBigIntArray.add(BigInteger.valueOf(temp));
         }
         bigIntBuff.clear();
-        System.out.println("Odszyfrowane - textInBigIntArr: " + textInBigIntArray);
+//        System.out.println("Odszyfrowane - textInBigIntArr: " + textInBigIntArray);
         PlainTextField.setText(builder.toString());
     }
 
